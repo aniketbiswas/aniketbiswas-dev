@@ -17,11 +17,6 @@ const StyledBlogsSection = styled.section`
       grid-template-columns: 1fr;
     }
   }
-
-  .more-button {
-    ${({ theme }) => theme.mixins.button};
-    margin: 50px auto 0;
-  }
 `;
 
 const StyledBlog = styled.article`
@@ -103,10 +98,9 @@ const Blogs = () => {
   const revealContainer = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const [articles, setArticles] = useState([]);
-  const [visibleArticles, setVisibleArticles] = useState(3);
   const [loading, setLoading] = useState(true);
 
-  // Medium username
+  // Medium username for RSS feed
   const mediumUsername = 'aniketbiswas';
 
   // Fallback data in case fetching fails
@@ -152,28 +146,28 @@ const Blogs = () => {
 
         const data = await response.json();
 
-        if (data.status === 'ok') {
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
           const mediumPosts = data.items.map(item => {
             // Extract description without HTML tags
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = item.description;
-            const cleanDescription = tempDiv.textContent || tempDiv.innerText || '';
+            let cleanDescription = '';
+            if (typeof document !== 'undefined') {
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = item.description || '';
+              cleanDescription = tempDiv.textContent || tempDiv.innerText || '';
+            } else {
+              // SSR fallback - simple regex to remove HTML tags
+              cleanDescription = (item.description || '').replace(/<[^>]*>/g, '');
+            }
             const truncatedDescription = `${cleanDescription.substring(0, 150)  }...`;
 
             // Extract image from content if thumbnail is empty
             let imageUrl = item.thumbnail;
-            if (!imageUrl || imageUrl === '') {
-              // Create a temporary div to parse the HTML content
+            if ((!imageUrl || imageUrl === '') && typeof document !== 'undefined') {
               const contentDiv = document.createElement('div');
-              contentDiv.innerHTML = item.content || item.description;
-
-              // Look for the first image in the content
+              contentDiv.innerHTML = item.content || item.description || '';
               const firstImage = contentDiv.querySelector('img');
               if (firstImage && firstImage.src && !firstImage.src.includes('medium.com/_/stat')) {
                 imageUrl = firstImage.src;
-              } else {
-                // If no image in content, use a default Medium image or leave null
-                imageUrl = null;
               }
             }
 
@@ -186,14 +180,13 @@ const Blogs = () => {
                 month: 'short',
                 day: 'numeric',
               }),
-              image: imageUrl,
+              image: imageUrl || null,
             };
           });
 
-          // Store all articles
           setArticles(mediumPosts);
         } else {
-          throw new Error('Invalid RSS feed');
+          throw new Error('Invalid RSS feed response');
         }
       } catch (error) {
         console.error('Error fetching Medium articles:', error);
@@ -215,11 +208,6 @@ const Blogs = () => {
     sr.reveal(revealContainer.current, srConfig());
   }, []);
 
-  // Function to handle showing more articles
-  const showMoreArticles = () => {
-    setVisibleArticles(prevVisible => prevVisible + 3);
-  };
-
   return (
     <StyledBlogsSection id="blogs" ref={revealContainer}>
       <h2 className="numbered-heading">Some Things I've Written</h2>
@@ -227,43 +215,33 @@ const Blogs = () => {
       {loading ? (
         <div className="loading">Loading articles...</div>
       ) : (
-        <>
-          <div className="blogs-grid">
-            {articles.slice(0, visibleArticles).map((article, i) => (
-              <StyledBlog key={i}>
-                <div className="blog-inner">
-                  <header>
-                    {article.image && (
-                      <img src={article.image} alt={article.title} className="blog-image" />
-                    )}
+        <div className="blogs-grid">
+          {articles.map((article, i) => (
+            <StyledBlog key={i}>
+              <div className="blog-inner">
+                <header>
+                  {article.image && (
+                    <img src={article.image} alt={article.title} className="blog-image" />
+                  )}
 
-                    <h3 className="blog-title">
-                      <a href={article.url} target="_blank" rel="noopener noreferrer">
-                        {article.title}
-                      </a>
-                    </h3>
+                  <h3 className="blog-title">
+                    <a href={article.url} target="_blank" rel="noopener noreferrer">
+                      {article.title}
+                    </a>
+                  </h3>
 
-                    <div className="blog-description">
-                      <p>{article.description}</p>
-                    </div>
-                  </header>
+                  <div className="blog-description">
+                    <p>{article.description}</p>
+                  </div>
+                </header>
 
-                  <footer>
-                    <div className="blog-date">{article.publishDate}</div>
-                  </footer>
-                </div>
-              </StyledBlog>
-            ))}
-          </div>
-
-          {visibleArticles < articles.length && (
-            <div style={{ textAlign: 'center' }}>
-              <button className="more-button" onClick={showMoreArticles}>
-                Show More
-              </button>
-            </div>
-          )}
-        </>
+                <footer>
+                  <div className="blog-date">{article.publishDate}</div>
+                </footer>
+              </div>
+            </StyledBlog>
+          ))}
+        </div>
       )}
     </StyledBlogsSection>
   );

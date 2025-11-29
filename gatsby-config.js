@@ -30,34 +30,7 @@ module.exports = {
         icon: 'src/images/pixel-computer.png',
       },
     },
-    {
-      resolve: `gatsby-plugin-offline`,
-      options: {
-        workboxConfig: {
-          skipWaiting: true,
-          clientsClaim: true,
-          runtimeCaching: [
-            {
-              urlPattern: /(\.js$|\.css$|static\/)/,
-              handler: `CacheFirst`,
-            },
-            {
-              urlPattern: /^https?:.*\/page-data\/.*\.json/,
-              handler: `NetworkFirst`,
-            },
-            {
-              urlPattern:
-                /^https?:.*\.(png|jpg|jpeg|webp|avif|svg|gif|tiff|js|woff|woff2|json|css)$/,
-              handler: `StaleWhileRevalidate`,
-            },
-            {
-              urlPattern: /^https?:.*\/$/,
-              handler: `NetworkFirst`,
-            },
-          ],
-        },
-      },
-    },
+    `gatsby-plugin-remove-serviceworker`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {

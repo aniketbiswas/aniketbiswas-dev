@@ -14,6 +14,18 @@ const Layout = ({ children, location }) => {
   const isHome = location.pathname === '/';
   const [isLoading, setIsLoading] = useState(isHome);
 
+  // Failsafe: Ensure loading state is cleared after maximum timeout
+  useEffect(() => {
+    if (isLoading) {
+      const maxLoadingTimeout = setTimeout(() => {
+        console.warn('Loading timeout reached, forcing content display');
+        setIsLoading(false);
+      }, 5000); // Maximum 5 seconds loading time
+
+      return () => clearTimeout(maxLoadingTimeout);
+    }
+  }, [isLoading]);
+
   // Sets target="_blank" rel="noopener noreferrer" on external links
   const handleExternalLinks = () => {
     const allLinks = Array.from(document.querySelectorAll('a'));

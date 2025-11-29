@@ -45,39 +45,54 @@ const StyledLoader = styled.div`
 const Loader = ({ finishLoading }) => {
   const [isMounted, setIsMounted] = useState(false);
 
-  const animate = () => {
-    // Set a timer to hide the loader after a delay
-    setTimeout(() => {
-      const loader = anime.timeline({
-        complete: () => finishLoading(),
-      });
-
-      loader
-        .add({
-          targets: '.loader-gif',
-          delay: 0,
-          duration: 500,
-          easing: 'easeInOutQuart',
-          opacity: 0,
-          scale: 0.8,
-        })
-        .add({
-          targets: '.loader',
-          duration: 200,
-          easing: 'easeInOutQuart',
-          opacity: 0,
-          zIndex: -1,
-        });
-    }, 2500); // Increased from 2000 to 2500ms to ensure it's visible
-  };
-
   useEffect(() => {
-    const timeout = setTimeout(() => {
+    const mountTimeout = setTimeout(() => {
       setIsMounted(true);
     }, 10);
-    animate();
-    return () => clearTimeout(timeout);
-  }, []);
+
+    // Fallback timeout - ensure loading completes even if animation fails
+    const fallbackTimeout = setTimeout(() => {
+      finishLoading();
+    }, 4000); // Maximum 4 seconds for loader
+
+    // Animation timeout
+    const animationTimeout = setTimeout(() => {
+      try {
+        const loader = anime.timeline({
+          complete: () => {
+            clearTimeout(fallbackTimeout); // Clear fallback if animation completes
+            finishLoading();
+          },
+        });
+
+        loader
+          .add({
+            targets: '.loader-gif',
+            delay: 0,
+            duration: 500,
+            easing: 'easeInOutQuart',
+            opacity: 0,
+            scale: 0.8,
+          })
+          .add({
+            targets: '.loader',
+            duration: 200,
+            easing: 'easeInOutQuart',
+            opacity: 0,
+            zIndex: -1,
+          });
+      } catch (error) {
+        console.error('Animation error:', error);
+        finishLoading(); // Fallback if animation throws
+      }
+    }, 2500);
+
+    return () => {
+      clearTimeout(mountTimeout);
+      clearTimeout(fallbackTimeout);
+      clearTimeout(animationTimeout);
+    };
+  }, [finishLoading]);
 
   return (
     <StyledLoader className="loader" isMounted={isMounted}>
