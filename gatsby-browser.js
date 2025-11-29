@@ -4,9 +4,12 @@
  * See: https://www.gatsbyjs.org/docs/browser-apis/
  */
 
+// Note: CDN fallback is now handled by inline script in gatsby-ssr.js
+// This runs BEFORE any Gatsby code, ensuring all fetch requests have fallback
+
 // This ensures the loading screen has enough time to initialize
 export const onInitialClientRender = () => {
-  // Add a small delay to ensure React has time to render before any optimizations
+  // Page has rendered
 };
 
 // Unregister service worker and clear caches when content changes
