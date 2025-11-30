@@ -53,9 +53,9 @@ const Loader = ({ finishLoading }) => {
     // Fallback timeout - ensure loading completes even if animation fails
     const fallbackTimeout = setTimeout(() => {
       finishLoading();
-    }, 4000); // Maximum 4 seconds for loader
+    }, 2500); // Maximum 2.5 seconds for loader
 
-    // Animation timeout
+    // Animation timeout - start animation after 1.5 seconds
     const animationTimeout = setTimeout(() => {
       try {
         const loader = anime.timeline({
@@ -69,23 +69,22 @@ const Loader = ({ finishLoading }) => {
           .add({
             targets: '.loader-gif',
             delay: 0,
-            duration: 500,
+            duration: 400,
             easing: 'easeInOutQuart',
             opacity: 0,
             scale: 0.8,
           })
           .add({
             targets: '.loader',
-            duration: 200,
+            duration: 150,
             easing: 'easeInOutQuart',
             opacity: 0,
             zIndex: -1,
           });
       } catch (error) {
-        console.error('Animation error:', error);
         finishLoading(); // Fallback if animation throws
       }
-    }, 2500);
+    }, 1500);
 
     return () => {
       clearTimeout(mountTimeout);

@@ -1,13 +1,12 @@
 const config = require('./src/config');
 
 module.exports = {
-  pathPrefix: '/aniketbiswas-dev',
   siteMetadata: {
     title: 'Aniket Biswas',
     description:
       'Aniket Biswas is a software engineer specializing in building scalable cloud solutions and distributed systems.',
-    siteUrl: 'https://aniketbiswas.github.io/aniketbiswas-dev', // Include pathPrefix in the siteUrl
-    image: '/og.png', // Path to your image you placed in the 'static' folder
+    siteUrl: 'https://www.aniketbiswas.dev',
+    image: '/og.png',
     twitterUsername: '@aniket__biswas',
   },
   plugins: [
@@ -78,7 +77,6 @@ module.exports = {
               maxWidth: 700,
               linkImagesToOriginal: true,
               quality: 90,
-              tracedSVG: { color: config.colors.green },
             },
           },
           {
@@ -151,9 +149,14 @@ module.exports = {
       },
     },
     {
-      resolve: `gatsby-plugin-google-analytics`,
+      resolve: `gatsby-plugin-google-gtag`,
       options: {
-        trackingId: 'UA-45666519-2',
+        trackingIds: [
+          'G-XXXXXXXXXX', // Replace with your GA4 Measurement ID
+        ],
+        pluginConfig: {
+          head: true,
+        },
       },
     },
   ],
