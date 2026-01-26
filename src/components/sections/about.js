@@ -132,10 +132,10 @@ const About = () => {
     'React/React Native',
     'Node.js',
     'Python',
-    'REST APIs',
-    'GraphQL',
-    'System Design',
-    'Performance Optimization',
+    'Go',
+    'Azure & AI Tools',
+    'GraphQL/REST APIs',
+    'MCP & LLM Integration',
   ];
 
   return (
