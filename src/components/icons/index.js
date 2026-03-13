@@ -1,5 +1,7 @@
+export { default as IconAnthropic } from './anthropic';
 export { default as IconAppStore } from './appstore';
 export { default as IconBookmark } from './bookmark';
+export { default as IconCertificate } from './certificate';
 export { default as IconCodepen } from './codepen';
 export { default as IconExternal } from './external';
 export { default as IconFolder } from './folder';
@@ -13,6 +15,7 @@ export { default as IconLinkedin } from './linkedin';
 export { default as IconLoader } from './loader';
 export { default as IconLogo } from './logo';
 export { default as IconMedium } from './medium';
+export { default as IconMicrosoft } from './microsoft';
 export { default as IconPlayStore } from './playstore';
 export { default as IconStar } from './star';
 export { default as IconTwitter } from './twitter';

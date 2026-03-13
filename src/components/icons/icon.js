@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  IconAnthropic,
   IconAppStore,
   IconBookmark,
+  IconCertificate,
   IconCodepen,
   IconExternal,
   IconFolder,
@@ -12,6 +14,7 @@ import {
   IconLinkedin,
   IconLoader,
   IconLogo,
+  IconMicrosoft,
   IconPlayStore,
   IconStar,
   IconTwitter,
@@ -20,10 +23,14 @@ import IconLeetCode from './leetcode';
 
 const Icon = ({ name }) => {
   switch (name) {
+    case 'Anthropic':
+      return <IconAnthropic />;
     case 'AppStore':
       return <IconAppStore />;
     case 'Bookmark':
       return <IconBookmark />;
+    case 'Certificate':
+      return <IconCertificate />;
     case 'Codepen':
       return <IconCodepen />;
     case 'External':
@@ -42,6 +49,8 @@ const Icon = ({ name }) => {
       return <IconLoader />;
     case 'Logo':
       return <IconLogo />;
+    case 'Microsoft':
+      return <IconMicrosoft />;
     case 'PlayStore':
       return <IconPlayStore />;
     case 'Star':

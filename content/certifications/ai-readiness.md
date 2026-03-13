@@ -1,7 +1,8 @@
 ---
 date: '2025-06-01'
 title: 'AI Readiness: Intermediate Proficiency'
-issuer: 'Skillup AI IDC'
+issuer: 'Microsoft (via Skillup AI IDC)'
+icon: 'Microsoft'
 credentialUrl: ''
 ---
 
