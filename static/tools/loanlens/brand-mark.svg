@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title description">
+  <title id="title">LoanLens</title>
+  <desc id="description">Two nested L forms with sculpted corners and cobalt-blue depth.</desc>
+  <defs>
+    <linearGradient id="ll-outer" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#365dde"/>
+      <stop offset="1" stop-color="#376fec"/>
+    </linearGradient>
+    <linearGradient id="ll-inner" x1="27" y1="8" x2="56" y2="37" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#548dfa"/>
+      <stop offset="1" stop-color="#3869e0"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#ll-outer)" d="M14 8a6 6 0 0 1 6 6v24a6 6 0 0 0 6 6h24a6 6 0 0 1 0 12H26A18 18 0 0 1 8 38V14a6 6 0 0 1 6-6Z"/>
+  <path fill="url(#ll-inner)" d="M32 8a5 5 0 0 1 5 5v11a3 3 0 0 0 3 3h11a5 5 0 0 1 0 10H40a13 13 0 0 1-13-13V13a5 5 0 0 1 5-5Z"/>
+</svg>

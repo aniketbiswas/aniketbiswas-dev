@@ -4,6 +4,44 @@
 
 > Last updated: February 2026
 
+> **LoanLens hosting note (September 2026):** The current portfolio is served
+> by Azure Storage static website hosting (`aniketwebsiteblob`, `$web`) behind
+> Azure Front Door (`aniketwebsite-fd`), at `https://www.aniketbiswas.dev`.
+> The SWA instructions below describe an alternative setup, not the current
+> production deployment. Storage does not interpret `staticwebapp.config.json`.
+
+### LoanLens standalone calculator
+
+The calculator lives at `/tools/loanlens/index.html`. Gatsby copies
+`static/tools/loanlens/` unchanged into `public/tools/loanlens/` during
+`yarn build`. Its ten HTML, CSS, JavaScript, SVG, and PNG files must stay together.
+It requires no API, server, additional package, or Gatsby page.
+
+`content/featured/LoanLens/index.md` adds a featured project using the existing
+native `<a href>` convention. Keep the explicit `index.html` URL and do not
+replace it with a Gatsby `Link`: this standalone document has no Gatsby
+page-data. Its global styles and scripts must not be imported into the portfolio.
+
+Calculations run locally with generic example inputs. `data-storage="browser"`
+must remain on the HTML root. Financial scenario storage is opt-in; the
+separate theme preference does not enable saving. The page loads no analytics
+or third-party resources. Other scripts on the same origin can access browser
+storage, so do not add session replay or tracking to this document.
+
+For a calculator-only release, upload **only** the ten files from
+`public/tools/loanlens/` to the matching `tools/loanlens/` prefix in the existing
+`$web` container. Preserve all other blobs, including the live homepage.
+Publish the featured project through a later, deliberate portfolio deployment;
+the isolated upload does not update the homepage. Do not deploy an older full
+portfolio build just to add this tool.
+
+Set `.html` to `text/html`, `.css` to `text/css`, `.js` to `text/javascript`,
+`.svg` to `image/svg+xml`, and `.png` to `image/png`. Check the exact public
+URL and supporting assets after upload, including the versioned SVG icon.
+The existing Front Door wildcard route serves the prefix without new
+infrastructure. For a future SWA deployment, the calculator prefix is excluded
+from the existing navigation fallback without changing global site headers.
+
 ---
 
 ## Table of Contents

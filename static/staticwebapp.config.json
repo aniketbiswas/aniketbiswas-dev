@@ -5,6 +5,7 @@
       "/images/*",
       "/static/*",
       "/icons/*",
+      "/tools/loanlens/*",
       "/*.js",
       "/*.css",
       "/*.json",
