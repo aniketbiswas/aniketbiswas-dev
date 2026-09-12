@@ -4,6 +4,66 @@
 
 > Last updated: February 2026
 
+> **LoanLens hosting note (September 2026):** The current portfolio is served
+> by Azure Storage static website hosting (`aniketwebsiteblob`, `$web`) behind
+> Azure Front Door (`aniketwebsite-fd`), at `https://www.aniketbiswas.dev`.
+> The SWA instructions below describe an alternative setup, not the current
+> production deployment. Storage does not interpret `staticwebapp.config.json`.
+
+### LoanLens standalone calculator
+
+The public address is **https://www.aniketbiswas.dev/loanlens**. Both `/loanlens`
+and `/loanlens/` serve the calculator directly, without redirecting to a file
+URL. The existing `/tools/loanlens/index.html` and `/tools/loanlens/` addresses
+remain available.
+
+During `yarn build`, Gatsby copies `static/tools/loanlens/` unchanged into
+`public/tools/loanlens/`. The `onPostBuild` hook in `gatsby-node.js` then generates
+`public/loanlens/index.html` from that same source document; do not maintain a
+second HTML copy. This entry sets an early `<base href="/tools/loanlens/">` so
+all assets and `document.baseURI`-derived scenario/theme storage keys retain
+their original namespace. Existing remembered plans and theme choices work
+at either address without migration. Canonical and Open Graph URL metadata
+point to `/loanlens`. A small inline script keeps fragment links, including
+the skip link, on the current friendly page rather than the asset directory.
+Any future Content Security Policy must permit the same-origin base and this
+script. No CSP currently blocks them on the Storage/Front Door site.
+
+The ten original HTML, CSS, JavaScript, SVG, and PNG files stay together.
+No API, server, additional package, or Gatsby page is required.
+
+`content/featured/LoanLens/index.md` adds a featured project using the existing
+native `<a href="/loanlens">` convention. Do not
+replace it with a Gatsby `Link`: this standalone document has no Gatsby
+page-data. Its global styles and scripts must not be imported into the portfolio.
+
+Calculations run locally with generic example inputs. `data-storage="browser"`
+must remain on the HTML root. Financial scenario storage is opt-in; the
+separate theme preference does not enable saving. The page loads no analytics
+or third-party resources. Other scripts on the same origin can access browser
+storage, so do not add session replay or tracking to this document.
+
+For an initial calculator release, upload **only** the ten files from
+`public/tools/loanlens/` to the matching `tools/loanlens/` prefix and the generated
+`public/loanlens/index.html` to `loanlens/index.html` in the existing `$web`
+container. If the original assets are already live and unchanged, adding the
+friendly address requires uploading only `loanlens/index.html`. Storage's
+existing directory-index behavior and Front Door wildcard route serve both
+friendly paths; no routing infrastructure changes are needed.
+Preserve all other blobs, including the live homepage.
+Publish the featured project through a later, deliberate portfolio deployment;
+the isolated upload does not update the homepage. Do not deploy an older full
+portfolio build just to add this tool.
+
+Set `.html` to `text/html`, `.css` to `text/css`, `.js` to `text/javascript`,
+`.svg` to `image/svg+xml`, and `.png` to `image/png`. Check the exact public
+URLs (with and without the trailing slash), reload, skip link, saved-plan/theme
+compatibility, and supporting assets after upload, including the versioned icons.
+The existing Front Door wildcard route serves the prefix without new
+infrastructure. For a future SWA deployment, exact friendly routes rewrite to
+the generated HTML and both calculator prefixes are excluded from the existing
+navigation fallback without changing global site headers.
+
 ---
 
 ## Table of Contents
