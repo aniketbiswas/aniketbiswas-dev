@@ -2,7 +2,7 @@
 date: '5'
 title: 'LoanLens'
 cover: './demo.png'
-external: '/tools/loanlens/index.html'
+external: '/loanlens'
 tech:
   - JavaScript
   - Browser Modules

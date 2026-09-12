@@ -1,4 +1,14 @@
 {
+  "routes": [
+    {
+      "route": "/loanlens",
+      "rewrite": "/loanlens/index.html"
+    },
+    {
+      "route": "/loanlens/",
+      "rewrite": "/loanlens/index.html"
+    }
+  ],
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": [
@@ -6,6 +16,8 @@
       "/static/*",
       "/icons/*",
       "/tools/loanlens/*",
+      "/loanlens",
+      "/loanlens/*",
       "/*.js",
       "/*.css",
       "/*.json",
