@@ -8,5 +8,5 @@ range: 'May 2018 - June 2018'
 url: 'https://prakshep.com/'
 ---
 
-- Analyzed Sentinel-2 satellite imagery using Python and OpenCV to classify water bodies and agricultural lands with high accuracy
-- Designed statistical Z-score models for spectral indices to identify harvest windows and outlier plots for precision farming insights
+- Used Sentinel-2 imagery, Python, and OpenCV to classify water bodies and agricultural land
+- Built Z-score models over spectral indices to flag harvest windows and outlier plots for precision farming

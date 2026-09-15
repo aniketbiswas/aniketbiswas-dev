@@ -1,128 +1,155 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import styled from 'styled-components';
-import { srConfig } from '@config';
-import sr from '@utils/sr';
-import { usePrefersReducedMotion } from '@hooks';
 import { Icon } from '@components/icons';
 
 const StyledCertificationsSection = styled.section`
-  max-width: 1000px;
-
-  .certifications-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 25px;
-    margin-top: 50px;
-
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-    }
+  .numbered-heading {
+    margin-bottom: 48px;
   }
 `;
 
-const StyledCertification = styled.div`
-  cursor: default;
-  transition: var(--transition);
+const StyledCredentialsList = styled.ol`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
 
-  &:hover,
-  &:focus-within {
-    transform: translateY(-5px);
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+`;
 
-    .cert-inner {
-      box-shadow: 0 20px 30px -15px var(--navy-shadow);
-    }
+const StyledCredential = styled.li`
+  position: relative;
+  min-width: 0;
+  padding: 24px;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-sm);
+  box-shadow: 7px 7px 0 ${({ index }) => (index % 2 === 0 ? 'var(--accent)' : 'var(--warm)')};
 
-    .cert-icon {
-      color: var(--green);
-    }
+  &:before {
+    content: '';
+    position: absolute;
+    inset: 7px;
+    border: 1px solid var(--line);
+    pointer-events: none;
   }
 
-  .cert-inner {
-    ${({ theme }) => theme.mixins.boxShadow};
-    ${({ theme }) => theme.mixins.flexBetween};
-    flex-direction: column;
-    align-items: flex-start;
+  &:after {
+    content: '';
+    position: absolute;
+    top: -26px;
+    right: -26px;
+    width: 72px;
+    height: 72px;
+    background: ${({ index }) =>
+      index % 2 === 0 ? 'var(--accent-tint-strong)' : 'var(--warm-tint)'};
+    transform: rotate(45deg);
+  }
+
+  @media (max-width: 600px) {
+    min-height: 0;
+    padding: 24px;
+  }
+
+  article {
     position: relative;
-    height: 100%;
-    padding: 2rem 1.75rem;
-    border-radius: var(--border-radius);
-    background-color: var(--light-navy);
-    transition: var(--transition);
-  }
-
-  .cert-top {
-    ${({ theme }) => theme.mixins.flexBetween};
-    width: 100%;
-    margin-bottom: 20px;
-  }
-
-  .cert-icon {
-    color: var(--slate);
-    transition: var(--transition);
-
-    svg {
-      width: 40px;
-      height: 40px;
-    }
-  }
-
-  .cert-links {
+    z-index: 1;
     display: flex;
-    align-items: center;
-    margin-right: -10px;
-    color: var(--light-slate);
-
-    a {
-      ${({ theme }) => theme.mixins.flexCenter};
-      padding: 5px 7px;
-      transition: var(--transition);
-
-      &:hover {
-        color: var(--green);
-      }
-
-      svg {
-        width: 20px;
-        height: 20px;
-      }
-    }
+    flex-direction: column;
+    height: 100%;
   }
 
-  .cert-title {
-    margin: 0 0 15px;
-    color: var(--lightest-slate);
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 1.25;
-
-    a {
-      ${({ theme }) => theme.mixins.inlineLink};
-    }
+  .certificate-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
   }
 
-  .cert-issuer {
-    color: var(--green);
+  .certificate-type {
     font-family: var(--font-mono);
     font-size: var(--fz-xs);
-    margin-bottom: 15px;
+    text-transform: uppercase;
   }
 
-  .cert-description {
-    color: var(--light-slate);
-    font-size: var(--fz-md);
-    line-height: 1.6;
+  .certificate-type {
+    color: var(--accent-strong);
+    font-weight: 600;
+  }
+
+  .credential-heading {
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+    margin-top: 26px;
+  }
+
+  .credential-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    background: var(--paper);
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    color: var(--accent-strong);
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  .credential-title {
+    margin: 5px 0 0;
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.16;
+  }
+
+  .credential-issuer {
+    display: block;
+    margin: 0;
+    color: var(--accent-strong);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .credential-description {
+    margin-top: 18px;
+    color: var(--text);
+    font-size: var(--fz-sm);
+    line-height: 1.55;
 
     p {
       margin: 0;
     }
   }
 
-  .cert-date {
-    color: var(--light-slate);
+  .certificate-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    color: var(--text-muted);
     font-family: var(--font-mono);
-    font-size: var(--fz-xxs);
-    margin-top: 20px;
+    font-size: var(--fz-xs);
+    text-transform: uppercase;
   }
 `;
 
@@ -131,7 +158,7 @@ const Certifications = () => {
     query {
       certifications: allMarkdownRemark(
         filter: { fileAbsolutePath: { regex: "/content/certifications/" } }
-        sort: { fields: [frontmatter___date], order: ASC }
+        sort: { fields: [frontmatter___date], order: DESC }
       ) {
         edges {
           node {
@@ -140,7 +167,6 @@ const Certifications = () => {
               title
               issuer
               icon
-              credentialUrl
             }
             html
           }
@@ -149,79 +175,52 @@ const Certifications = () => {
     }
   `);
 
-  const certificationsData = data.certifications.edges;
-  const revealContainer = useRef(null);
-  const revealCerts = useRef([]);
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
-
-    sr.reveal(revealContainer.current, srConfig());
-    revealCerts.current.forEach((ref, i) => sr.reveal(ref, srConfig(i * 100)));
-  }, []);
+  const credentials = data.certifications.edges;
 
   return (
-    <StyledCertificationsSection id="certifications" ref={revealContainer}>
-      <h2 className="numbered-heading">Certifications</h2>
+    <StyledCertificationsSection id="certifications">
+      <h2 className="numbered-heading">Learning beyond the day job</h2>
 
-      <div className="certifications-grid">
-        {certificationsData &&
-          certificationsData.map(({ node }, i) => {
-            const { frontmatter, html } = node;
-            const { title, issuer, icon, credentialUrl, date } = frontmatter;
+      <StyledCredentialsList>
+        {credentials.map(({ node }, index) => {
+          const { frontmatter, html } = node;
+          const { title, issuer, icon, date } = frontmatter;
+          const formattedDate = new Date(date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            timeZone: 'UTC',
+          });
 
-            return (
-              <StyledCertification key={i} ref={el => (revealCerts.current[i] = el)}>
-                <div className="cert-inner">
-                  <header>
-                    <div className="cert-top">
-                      <div className="cert-icon">
-                        <Icon name={icon || 'Certificate'} />
-                      </div>
-                      <div className="cert-links">
-                        {credentialUrl && (
-                          <a
-                            href={credentialUrl}
-                            aria-label="View Credential"
-                            target="_blank"
-                            rel="noreferrer">
-                            <Icon name="External" />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-
-                    <h3 className="cert-title">
-                      {credentialUrl ? (
-                        <a href={credentialUrl} target="_blank" rel="noreferrer">
-                          {title}
-                        </a>
-                      ) : (
-                        title
-                      )}
-                    </h3>
-
-                    <div className="cert-issuer">{issuer}</div>
-
-                    <div className="cert-description" dangerouslySetInnerHTML={{ __html: html }} />
-                  </header>
-
-                  <footer>
-                    <div className="cert-date">
-                      {new Date(date).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                      })}
-                    </div>
-                  </footer>
+          return (
+            <StyledCredential key={title} index={index}>
+              <article aria-label={`${title}, ${issuer}`}>
+                <div className="certificate-top">
+                  <span className="certificate-type">Coursework</span>
                 </div>
-              </StyledCertification>
-            );
-          })}
-      </div>
+
+                <div className="credential-heading">
+                  <span className="credential-icon" aria-hidden="true">
+                    <Icon name={icon || 'Certificate'} />
+                  </span>
+                  <div>
+                    <span className="credential-issuer">{issuer}</span>
+                    <h3 className="credential-title">{title}</h3>
+                  </div>
+                </div>
+                <div
+                  className="credential-description"
+                  dangerouslySetInnerHTML={{ __html: html }}
+                />
+
+                <footer className="certificate-footer">
+                  <span>Date</span>
+                  <time dateTime={date}>{formattedDate}</time>
+                </footer>
+              </article>
+            </StyledCredential>
+          );
+        })}
+      </StyledCredentialsList>
     </StyledCertificationsSection>
   );
 };

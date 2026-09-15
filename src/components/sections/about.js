@@ -1,194 +1,143 @@
-import React, { useEffect, useRef } from 'react';
-import { StaticImage } from 'gatsby-plugin-image';
+import React from 'react';
 import styled from 'styled-components';
-import { srConfig } from '@config';
-import sr from '@utils/sr';
-import { usePrefersReducedMotion } from '@hooks';
 
 const StyledAboutSection = styled.section`
-  max-width: 900px;
-
-  .inner {
+  .about-grid {
     display: grid;
-    grid-template-columns: 3fr 2fr;
-    grid-gap: 50px;
+    grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.25fr);
+    gap: 82px;
+    align-items: start;
 
-    @media (max-width: 768px) {
-      display: block;
+    @media (max-width: 800px) {
+      grid-template-columns: 1fr;
+      gap: 34px;
     }
   }
-`;
-const StyledText = styled.div`
-  ul.skills-list {
+
+  .about-lead {
+    position: relative;
+    margin: 0;
+    padding-left: 24px;
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: 34px;
+    font-style: italic;
+    line-height: 1.23;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0.15em;
+      bottom: 0.15em;
+      left: 0;
+      width: 3px;
+      background: var(--warm);
+    }
+
+    @media (max-width: 600px) {
+      font-size: 28px;
+    }
+  }
+
+  .about-copy {
+    p {
+      margin: 0 0 20px;
+      color: var(--text);
+      font-size: var(--fz-lg);
+      line-height: 1.7;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .toolkit {
     display: grid;
-    grid-template-columns: repeat(2, minmax(140px, 200px));
-    grid-gap: 0 10px;
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 42px;
+    align-items: start;
+    margin-top: 54px;
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+  }
+
+  .toolkit-label {
+    margin: 0;
+    color: var(--ink);
+    font-size: var(--fz-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
     padding: 0;
-    margin: 20px 0 0 0;
-    overflow: hidden;
+    margin: 0;
     list-style: none;
-    word-break: break-word;
 
     li {
       position: relative;
-      margin-bottom: 10px;
-      padding-left: 20px;
+      color: var(--text-muted);
       font-family: var(--font-mono);
       font-size: var(--fz-xs);
-      word-break: break-word;
 
-      &:before {
-        content: '▹';
+      &:not(:last-child):after {
+        content: '/';
         position: absolute;
-        left: 0;
-        color: var(--green);
-        font-size: var(--fz-sm);
-        line-height: 12px;
+        right: -14px;
+        color: var(--warm);
       }
     }
   }
 `;
-const StyledPic = styled.div`
-  position: relative;
-  max-width: 300px;
 
-  @media (max-width: 768px) {
-    margin: 50px auto 0;
-    width: 70%;
-  }
+const skills = [
+  'MCP & LLM Integration',
+  'OpenAI & Anthropic APIs',
+  'Azure AI Foundry',
+  'Python/TensorFlow/Keras',
+  'JavaScript/TypeScript',
+  'React/React Native',
+  'Node.js/Go',
+  'GraphQL/REST APIs',
+];
 
-  .wrapper {
-    ${({ theme }) => theme.mixins.boxShadow};
-    display: block;
-    position: relative;
-    width: 100%;
-    border-radius: var(--border-radius);
-    background-color: var(--green);
+const About = () => (
+  <StyledAboutSection id="about">
+    <h2 className="numbered-heading">About me</h2>
 
-    &:hover,
-    &:focus {
-      outline: 0;
-      transform: translate(-4px, -4px);
+    <div className="about-grid">
+      <p className="about-lead">AI-assisted SDLC and developer tooling.</p>
 
-      &:after {
-        transform: translate(8px, 8px);
-      }
-
-      .img {
-        filter: none;
-        mix-blend-mode: normal;
-      }
-    }
-
-    .img {
-      position: relative;
-      border-radius: var(--border-radius);
-      mix-blend-mode: multiply;
-      filter: grayscale(100%) contrast(1);
-      transition: var(--transition);
-    }
-
-    &:before,
-    &:after {
-      content: '';
-      display: block;
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: var(--border-radius);
-      transition: var(--transition);
-    }
-
-    &:before {
-      top: 0;
-      left: 0;
-      background-color: var(--navy);
-      mix-blend-mode: screen;
-    }
-
-    &:after {
-      border: 2px solid var(--green);
-      top: 14px;
-      left: 14px;
-      z-index: -1;
-    }
-  }
-`;
-
-const About = () => {
-  const revealContainer = useRef(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
-
-    sr.reveal(revealContainer.current, srConfig());
-  }, []);
-
-  const skills = [
-    'JavaScript/TypeScript',
-    'React/React Native',
-    'Node.js',
-    'Python',
-    'Go',
-    'Azure & AI Tools',
-    'GraphQL/REST APIs',
-    'MCP & LLM Integration',
-  ];
-
-  return (
-    <StyledAboutSection id="about" ref={revealContainer}>
-      <h2 className="numbered-heading">About Me</h2>
-
-      <div className="inner">
-        <StyledText>
-          <div>
-            <p>
-              Hello! I'm Aniket, a Software Engineer at Microsoft with experience in building and
-              optimizing mobile applications and frontend systems. As a member of the Microsoft Viva
-              Connections Mobile team, I work on the React Native application that serves millions
-              of users, focusing primarily on performance optimization and user experience.
-            </p>
-
-            <p>
-              My expertise includes frontend development with React and React Native, and I enjoy
-              working on performance optimization and developer tooling. I've previously contributed
-              to projects at <a href="https://farebond.com/">Farebond</a> and{' '}
-              <a href="https://research.samsung.com/sri-b">Samsung Research</a>, where I worked on
-              various aspects from flight booking systems to sensor data processing.
-            </p>
-
-            <p>
-              I'm passionate about creating usable and performant applications, writing clean code,
-              and building tools that make development more efficient. I enjoy solving complex
-              problems with a focus on delivering great user experiences and maintainable codebases.
-            </p>
-
-            <p>Here are a few technologies I've been working with recently:</p>
-          </div>
-
-          <ul className="skills-list">
-            {skills && skills.map((skill, i) => <li key={i}>{skill}</li>)}
-          </ul>
-        </StyledText>
-
-        <StyledPic>
-          <div className="wrapper">
-            <StaticImage
-              className="img"
-              src="../../images/me.jpg"
-              width={500}
-              quality={95}
-              formats={['AUTO', 'WEBP']}
-              alt="Headshot"
-            />
-          </div>
-        </StyledPic>
+      <div className="about-copy">
+        <p>
+          I build developer tooling for an AI-assisted software development lifecycle (SDLC). At
+          Microsoft, I authored the AI Harness, a contract-driven framework for spec-validated
+          LLM-assisted engineering.
+        </p>
+        <p>
+          I also developed the Obsidian Model Context Protocol (MCP) server for AI-assisted note
+          management. My earlier deep-learning work at Samsung Research used TensorFlow and Keras
+          for an RNN-based wearable-controller calibration model.
+        </p>
       </div>
-    </StyledAboutSection>
-  );
-};
+    </div>
+
+    <div className="toolkit">
+      <p className="toolkit-label">Technologies</p>
+      <ul className="skills-list">
+        {skills.map(skill => (
+          <li key={skill}>{skill}</li>
+        ))}
+      </ul>
+    </div>
+  </StyledAboutSection>
+);
 
 export default About;

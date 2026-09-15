@@ -1,132 +1,107 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+import { Link } from 'gatsby';
 import styled from 'styled-components';
-import { Icon } from '@components/icons';
-import { socialMedia } from '@config';
+import pixelDuck from '@images/pixel-duck.png';
 
 const StyledFooter = styled.footer`
-  ${({ theme }) => theme.mixins.flexCenter};
-  flex-direction: column;
-  height: auto;
-  min-height: 70px;
-  padding: 15px;
-  text-align: center;
-`;
+  border-top: 1px solid var(--line-frame);
+  background: var(--paper);
 
-const StyledSocialLinks = styled.div`
-  display: none;
-
-  @media (max-width: 768px) {
-    display: block;
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
     width: 100%;
-    max-width: 270px;
-    margin: 0 auto 10px;
-    color: var(--light-slate);
+    max-width: var(--content-max);
+    min-height: 78px;
+    margin: 0 auto;
+    padding: 18px var(--frame-pad);
+
+    @media (max-width: 900px) {
+      padding-right: 40px;
+      padding-left: 40px;
+    }
+
+    @media (max-width: 600px) {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 6px;
+      padding: 24px var(--frame-pad-sm);
+    }
   }
 
-  ul {
-    ${({ theme }) => theme.mixins.flexBetween};
-    padding: 0;
+  p {
     margin: 0;
-    list-style: none;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    text-transform: uppercase;
+  }
+
+  .footer-mark {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--fz-md);
+    font-weight: 600;
+    text-transform: none;
+  }
+
+  .footer-dot {
+    color: var(--warm);
+  }
+
+  .footer-duck {
+    width: 32px;
+    height: 33px;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+
+  .footer-links {
+    display: flex;
+    align-items: center;
+    gap: 22px;
 
     a {
-      padding: 10px;
-      svg {
-        width: 20px;
-        height: 20px;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: var(--fz-xs);
+      text-transform: uppercase;
+
+      &:hover,
+      &:focus-visible {
+        color: var(--accent-strong);
       }
     }
   }
 `;
 
-const StyledCredit = styled.div`
-  color: var(--light-slate);
-  font-family: var(--font-mono);
-  font-size: var(--fz-xxs);
-  line-height: 1;
-
-  a {
-    padding: 10px;
-  }
-
-  .github-stats {
-    margin-top: 10px;
-
-    & > span {
-      display: inline-flex;
-      align-items: center;
-      margin: 0 7px;
-    }
-    svg {
-      display: inline-block;
-      margin-right: 5px;
-      width: 14px;
-      height: 14px;
-    }
-  }
-`;
-
-const Footer = () => {
-  const [githubInfo, setGitHubInfo] = useState({
-    stars: null,
-    forks: null,
-  });
-
-  useEffect(() => {
-    if (process.env.NODE_ENV !== 'production') {
-      return;
-    }
-    fetch('https://api.github.com/repos/aniketbiswas/aniketbiswas-dev')
-      .then(response => response.json())
-      .then(json => {
-        const { stargazers_count, forks_count } = json;
-        setGitHubInfo({
-          stars: stargazers_count,
-          forks: forks_count,
-        });
-      })
-      .catch(e => console.error(e));
-  }, []);
-
-  return (
-    <StyledFooter>
-      <StyledSocialLinks>
-        <ul>
-          {socialMedia &&
-            socialMedia.map(({ name, url }, i) => (
-              <li key={i}>
-                <a href={url} aria-label={name}>
-                  <Icon name={name} />
-                </a>
-              </li>
-            ))}
-        </ul>
-      </StyledSocialLinks>
-
-      <StyledCredit tabindex="-1">
-        <a href="https://brittanychiang.com" target="_blank" rel="noopener noreferrer">
-          <div>Inspired by Brittany Chiang</div>
-          {githubInfo.stars !== null && githubInfo.forks !== null ? (
-            <div className="github-stats">
-              <span>
-                <Icon name="Star" />
-                <span>{githubInfo.stars.toLocaleString()}</span>
-              </span>
-              <span>
-                <Icon name="Fork" />
-                <span>{githubInfo.forks.toLocaleString()}</span>
-              </span>
-            </div>
-          ) : null}
+const Footer = () => (
+  <StyledFooter>
+    <div className="footer-inner">
+      <p className="footer-mark">
+        <img className="footer-duck" src={pixelDuck} width="32" height="33" alt="" loading="lazy" />
+        <span>
+          Aniket Biswas<span className="footer-dot">.</span>
+        </span>
+      </p>
+      <nav className="footer-links" aria-label="Footer">
+        <Link to="/playground">Playground</Link>
+        <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+          Résumé
         </a>
-      </StyledCredit>
-    </StyledFooter>
-  );
-};
-
-Footer.propTypes = {
-  githubInfo: PropTypes.object,
-};
+      </nav>
+      <p>Built with Gatsby · © {new Date().getFullYear()}</p>
+    </div>
+  </StyledFooter>
+);
 
 export default Footer;

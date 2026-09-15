@@ -1,248 +1,284 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { srConfig } from '@config';
-import sr from '@utils/sr';
-import { usePrefersReducedMotion } from '@hooks';
+import { Icon } from '@components/icons';
+import { fetchMediumFeed, MEDIUM_PROFILE_URL, selectMediumImage } from '@utils/mediumFeed';
 
 const StyledBlogsSection = styled.section`
-  max-width: 1000px;
+  .numbered-heading {
+    margin-bottom: 48px;
+  }
 
-  .blogs-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 25px;
-    margin-top: 50px;
+  .feed-message {
+    max-width: 620px;
+    color: var(--text);
+    font-size: var(--fz-lg);
+  }
 
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
+  .feed-retry {
+    ${({ theme }) => theme.mixins.smallButton};
+    margin-top: 16px;
+  }
+
+  .medium-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 34px;
+    color: var(--ink);
+    font-size: var(--fz-sm);
+    font-weight: 600;
+
+    svg {
+      width: 17px;
+      height: 17px;
+      color: var(--warm);
+      transition: transform 0.2s var(--easing);
+    }
+
+    &:hover,
+    &:focus-visible {
+      color: var(--accent);
+
+      svg {
+        transform: translate(2px, -2px);
+      }
     }
   }
 `;
 
-const StyledBlog = styled.article`
-  cursor: pointer;
-  transition: var(--transition);
+const StyledArticleList = styled.ol`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
 
-  &:hover,
-  &:focus {
-    transform: translateY(-5px);
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+`;
 
-    .blog-inner {
-      box-shadow: 0 20px 30px -15px var(--navy-shadow);
+const StyledArticle = styled.li`
+  min-width: 0;
+
+  a {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    color: inherit;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.25s var(--easing), box-shadow 0.25s var(--easing),
+      border-color 0.25s var(--easing);
+
+    &:hover,
+    &:focus-visible {
+      color: inherit;
+      border-color: var(--accent);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+
+      .article-image {
+        filter: saturate(1);
+        transform: scale(1.025);
+      }
+
+      .article-title {
+        color: var(--accent);
+      }
     }
   }
 
-  .blog-inner {
-    ${({ theme }) => theme.mixins.boxShadow};
-    ${({ theme }) => theme.mixins.flexBetween};
-    flex-direction: column;
-    align-items: flex-start;
-    position: relative;
+  .article-image-wrap {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: var(--paper-2);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .article-image {
+    display: block;
+    width: 100%;
     height: 100%;
-    padding: 2rem 1.75rem;
-    border-radius: var(--border-radius);
-    background-color: var(--light-navy);
-    transition: var(--transition);
+    object-fit: cover;
+    filter: saturate(0.88);
+    transition: transform 0.4s var(--easing), filter 0.4s var(--easing);
   }
 
-  .blog-inner {
-    ${({ theme }) => theme.mixins.boxShadow};
-    ${({ theme }) => theme.mixins.flexBetween};
+  .article-body {
+    display: flex;
+    flex: 1;
     flex-direction: column;
-    align-items: flex-start;
-    position: relative;
-    height: 100%;
-    padding: 2rem 1.75rem;
-    border-radius: var(--border-radius);
-    background-color: var(--light-navy);
-    transition: var(--transition);
+    padding: 22px;
   }
 
-  .blog-title {
-    margin: 0 0 10px 0;
-    color: var(--lightest-slate);
-    font-size: var(--fz-xxl);
-
-    a {
-      ${({ theme }) => theme.mixins.inlineLink};
-    }
+  &.text-only .article-body {
+    justify-content: center;
+    min-height: 240px;
   }
 
-  .blog-description {
-    color: var(--light-slate);
-    font-size: 17px;
-  }
-
-  .blog-date {
-    color: var(--light-slate);
+  .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin-bottom: 14px;
+    color: var(--text-muted);
     font-family: var(--font-mono);
     font-size: var(--fz-xs);
-    margin-top: 20px;
+    text-transform: uppercase;
   }
 
-  .blog-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: var(--border-radius);
-    margin-bottom: 20px;
-  }
-
-  .loading {
-    color: var(--light-slate);
-    font-style: italic;
+  .article-title {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+    transition: color 0.2s var(--easing);
   }
 `;
 
 const Blogs = () => {
-  const revealContainer = useRef(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  // Medium username for RSS feed
-  const mediumUsername = 'aniketbiswas';
-
-  // Fallback data in case fetching fails
-  const fallbackArticles = [
-    {
-      title: 'Dirty Room Theory',
-      description:
-        'An interesting perspective on software development practices and how small inefficiencies can compound over time, drawing parallels between maintaining clean code and keeping a tidy workspace.',
-      url: 'https://medium.com/@aniketbiswas/dirty-room-theory-4fb1f0b48bc6',
-      publishDate: 'Published on Medium',
-      image: null,
-    },
-    {
-      title: 'Ship of Theseus and Software Development',
-      description:
-        'Exploring the philosophical paradox of the Ship of Theseus through the lens of software development, examining how applications evolve and transform while maintaining their core identity.',
-      url: 'https://medium.com/@aniketbiswas/ship-of-theseus-and-software-development-3579a1d05eaa',
-      publishDate: 'Published on Medium',
-      image: null,
-    },
-    {
-      title: 'My Internship Experience: Learning, Fun, Hard Goodbyes',
-      description:
-        'A personal reflection on my internship journey, sharing insights about the learning process, memorable experiences, and the emotional aspects of transitioning from internship to full-time roles.',
-      url: 'https://medium.com/@aniketbiswas/my-internship-experience-learning-fun-hard-goodbyes-d9cc64e3213e',
-      publishDate: 'Published on Medium',
-      image: null,
-    },
-  ];
+  const [feed, setFeed] = useState({ status: 'idle', articles: [] });
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    const fetchRssFeed = async () => {
-      setLoading(true);
+    const controller = new AbortController();
+    let cancelled = false;
+    let timedOut = false;
+    setFeed({ status: 'loading', articles: [] });
+
+    const timeout = window.setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, 15000);
+
+    const load = async () => {
       try {
-        // Use RSS2JSON service to convert Medium RSS feed to JSON
-        const response = await fetch(
-          `https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@${mediumUsername}`,
-        );
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch RSS feed');
+        const items = await fetchMediumFeed({ signal: controller.signal });
+        if (cancelled) {
+          return;
         }
 
-        const data = await response.json();
-
-        if (data.status === 'ok' && data.items && data.items.length > 0) {
-          const mediumPosts = data.items.map(item => {
-            // Extract description without HTML tags
-            let cleanDescription = '';
-            if (typeof document !== 'undefined') {
-              const tempDiv = document.createElement('div');
-              tempDiv.innerHTML = item.description || '';
-              cleanDescription = tempDiv.textContent || tempDiv.innerText || '';
-            } else {
-              // SSR fallback - simple regex to remove HTML tags
-              cleanDescription = (item.description || '').replace(/<[^>]*>/g, '');
-            }
-            const truncatedDescription = `${cleanDescription.substring(0, 150)  }...`;
-
-            // Extract image from content if thumbnail is empty
-            let imageUrl = item.thumbnail;
-            if ((!imageUrl || imageUrl === '') && typeof document !== 'undefined') {
-              const contentDiv = document.createElement('div');
-              contentDiv.innerHTML = item.content || item.description || '';
-              const firstImage = contentDiv.querySelector('img');
-              if (firstImage && firstImage.src && !firstImage.src.includes('medium.com/_/stat')) {
-                imageUrl = firstImage.src;
-              }
-            }
-
-            return {
-              title: item.title,
-              description: truncatedDescription,
-              url: item.link,
-              publishDate: new Date(item.pubDate).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-              }),
-              image: imageUrl || null,
-            };
-          });
-
-          setArticles(mediumPosts);
-        } else {
-          throw new Error('Invalid RSS feed response');
-        }
+        const articles = items.map(({ html, imageSources, ...article }) => {
+          let image = selectMediumImage(imageSources, article.url);
+          if (!image && html) {
+            // Template contents stay inert; only image URLs are extracted, never feed HTML.
+            const template = document.createElement('template');
+            template.innerHTML = html;
+            const sources = [...template.content.querySelectorAll('img')].map(element =>
+              element.getAttribute('src'),
+            );
+            image = selectMediumImage(sources, article.url);
+          }
+          return { ...article, image };
+        });
+        setFeed({ status: articles.length ? 'loaded' : 'empty', articles });
       } catch (error) {
-        console.error('Error fetching Medium articles:', error);
-        // Fall back to hardcoded data if fetch fails
-        setArticles(fallbackArticles);
+        if (!cancelled) {
+          console.error('Unable to load the Medium feed:', error);
+          setFeed({ status: 'error', articles: [], timedOut });
+        }
       } finally {
-        setLoading(false);
+        window.clearTimeout(timeout);
       }
     };
 
-    fetchRssFeed();
-  }, []);
+    load();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [attempt]);
 
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
-
-    sr.reveal(revealContainer.current, srConfig());
-  }, []);
+  const hideFailedImage = (url, image) => {
+    console.warn('Unable to load a Medium article image:', image);
+    setFeed(current => ({
+      ...current,
+      articles: current.articles.map(article =>
+        article.url === url && article.image === image ? { ...article, image: null } : article,
+      ),
+    }));
+  };
 
   return (
-    <StyledBlogsSection id="blogs" ref={revealContainer}>
-      <h2 className="numbered-heading">Some Things I've Written</h2>
+    <StyledBlogsSection id="blogs">
+      <h2 className="numbered-heading">Writing</h2>
 
-      {loading ? (
-        <div className="loading">Loading articles...</div>
-      ) : (
-        <div className="blogs-grid">
-          {articles.map((article, i) => (
-            <StyledBlog key={i}>
-              <div className="blog-inner">
-                <header>
-                  {article.image && (
-                    <img src={article.image} alt={article.title} className="blog-image" />
-                  )}
-
-                  <h3 className="blog-title">
-                    <a href={article.url} target="_blank" rel="noopener noreferrer">
-                      {article.title}
-                    </a>
-                  </h3>
-
-                  <div className="blog-description">
-                    <p>{article.description}</p>
-                  </div>
-                </header>
-
-                <footer>
-                  <div className="blog-date">{article.publishDate}</div>
-                </footer>
-              </div>
-            </StyledBlog>
-          ))}
+      {feed.status === 'loading' && (
+        <p className="feed-message" role="status">
+          Loading articles from Medium...
+        </p>
+      )}
+      {feed.status === 'error' && (
+        <div className="feed-message" role="alert">
+          <p>
+            {feed.timedOut
+              ? 'The Medium feed is taking too long to respond.'
+              : 'Could not load the Medium feed.'}{' '}
+            Try again or read the articles directly on Medium.
+          </p>
+          <button
+            className="feed-retry"
+            type="button"
+            onClick={() => setAttempt(value => value + 1)}>
+            Try again
+          </button>
         </div>
       )}
+      {feed.status === 'empty' && (
+        <p className="feed-message" role="status">
+          No articles were returned by the Medium feed. You can still visit the profile below.
+        </p>
+      )}
+      <div aria-busy={feed.status === 'loading'}>
+        {feed.status === 'loaded' && (
+          <StyledArticleList aria-label="Articles from Medium">
+            {feed.articles.map(({ title, url, date, dateTime, image }) => (
+              <StyledArticle key={url} className={image ? undefined : 'text-only'}>
+                <a href={url} target="_blank" rel="noopener noreferrer">
+                  {image && (
+                    <span className="article-image-wrap">
+                      <img
+                        className="article-image"
+                        src={image}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        referrerPolicy="no-referrer"
+                        onError={() => hideFailedImage(url, image)}
+                      />
+                    </span>
+                  )}
+                  <div className="article-body">
+                    <span className="article-meta">
+                      <time dateTime={dateTime}>{date}</time>
+                    </span>
+                    <h3 className="article-title">{title}</h3>
+                  </div>
+                </a>
+              </StyledArticle>
+            ))}
+          </StyledArticleList>
+        )}
+      </div>
+
+      <noscript>Read the articles directly on Medium using the link below.</noscript>
+      <a
+        className="medium-link"
+        href={MEDIUM_PROFILE_URL}
+        target="_blank"
+        rel="noopener noreferrer">
+        All articles on Medium <Icon name="External" />
+      </a>
     </StyledBlogsSection>
   );
 };

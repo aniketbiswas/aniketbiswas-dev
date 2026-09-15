@@ -2,10 +2,10 @@ const config = require('./src/config');
 
 module.exports = {
   siteMetadata: {
-    title: 'Aniket Biswas',
+    title: 'Aniket Biswas | Software Engineer',
     description:
-      'Aniket Biswas is a software engineer specializing in building scalable cloud solutions and distributed systems.',
-    siteUrl: 'https://www.aniketbiswas.dev',
+      'Software Engineer II on Microsoft’s OneDrive and SharePoint team, building the AI Harness for spec-driven product development.',
+    siteUrl: 'https://aniketbiswas.dev',
     image: '/og.png',
     twitterUsername: '@aniket__biswas',
   },
@@ -16,7 +16,6 @@ module.exports = {
     `gatsby-plugin-sharp`,
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sitemap`,
-    `gatsby-plugin-robots-txt`,
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
@@ -42,20 +41,6 @@ module.exports = {
       options: {
         name: 'content',
         path: `${__dirname}/content/`,
-      },
-    },
-    {
-      resolve: `gatsby-source-filesystem`,
-      options: {
-        name: `posts`,
-        path: `${__dirname}/content/posts`,
-      },
-    },
-    {
-      resolve: `gatsby-source-filesystem`,
-      options: {
-        name: `projects`,
-        path: `${__dirname}/content/projects`,
       },
     },
     {
@@ -146,17 +131,6 @@ module.exports = {
             },
           },
         ],
-      },
-    },
-    {
-      resolve: `gatsby-plugin-google-gtag`,
-      options: {
-        trackingIds: [
-          'G-XXXXXXXXXX', // Replace with your GA4 Measurement ID
-        ],
-        pluginConfig: {
-          head: true,
-        },
       },
     },
   ],

@@ -6,4 +6,4 @@ icon: 'Microsoft'
 credentialUrl: ''
 ---
 
-AI Foundations certification demonstrating intermediate proficiency in AI concepts, tools, and practical applications.
+AI concepts, tools, and practical applications.

@@ -6,4 +6,4 @@ icon: 'Anthropic'
 credentialUrl: ''
 ---
 
-Certification covering the fundamentals of Model Context Protocol (MCP) for building AI agent integrations.
+Fundamentals of Model Context Protocol (MCP) for AI agent integrations.

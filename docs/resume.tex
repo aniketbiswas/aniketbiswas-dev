@@ -1,0 +1,126 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[a4paper, top=0.3in, bottom=0.3in, left=0.4in, right=0.4in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,urlcolor=accent,linkcolor=accent]{hyperref}
+\usepackage{array}
+
+\definecolor{accent}{HTML}{1F3A5F}
+
+% Preserve the original Computer Modern typography across TeX engines.
+\renewcommand{\rmdefault}{cmr}
+
+\usepackage[none]{hyphenat}
+\sloppy
+
+\pagestyle{empty}
+\setlength{\parskip}{0pt}
+\setlength{\parindent}{0pt}
+
+\setlist[itemize,1]{label={}, leftmargin=0pt, itemsep=1pt}
+\setlist[itemize,2]{label=\textbullet, leftmargin=12pt, itemsep=1.2pt, labelsep=0.4em}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-1pt}\item
+  \begin{tabular*}{\textwidth}[t]{l@{\extracolsep{\fill}}r}
+    \textbf{#1} & \textbf{#2} \\
+    \textit{\small#3} & \textit{\small#4}
+  \end{tabular*}\vspace{-6pt}
+}
+
+\newcommand{\resumeItem}[1]{\item \small{#1}}
+
+\titleformat{\section}{
+  \vspace{-7pt}\scshape\raggedright\large\bfseries\color{accent}
+}{}{0em}{}[{\color{accent}\titlerule}\vspace{-2pt}]
+
+\begin{document}
+
+\begin{center}
+  {\huge\bfseries Aniket Biswas}\\[2pt]
+  \small
+  +91 99323 80056 $|$ \href{mailto:aniketbiswas100@gmail.com}{aniketbiswas100@gmail.com} $|$
+  \href{https://linkedin.com/in/aniketbiswas}{linkedin.com/in/aniketbiswas} $|$
+  \href{https://github.com/aniketbiswas}{github.com/aniketbiswas} $|$
+  \href{https://aniketbiswas.dev}{aniketbiswas.dev}
+\end{center}
+
+\vspace{-10pt}
+
+\section{Education}
+\begin{itemize}
+  \resumeSubheading{Indian Institute of Technology (IIT) Kharagpur}{Jul 2015 -- Jun 2020}{Integrated B.S. + M.S. in Mathematics and Computing \textnormal{\textbar{} CGPA: 7.5/10}}{Kharagpur, India}
+\end{itemize}
+
+\section{Technical Skills}
+\begin{itemize}[nosep, leftmargin=*]
+  \item \textbf{Languages:} JavaScript, TypeScript, Python, C++, Swift, Kotlin, C\#, Go, SQL
+  \item \textbf{Frameworks:} React, React Native, Node.js, GraphQL, .NET Core, TensorFlow
+  \item \textbf{Cloud \& AI:} Azure (App Service, AI Foundry), MCP, OpenAI API, Anthropic API, Microsoft AI Tools
+  \item \textbf{Tools:} Git, CI/CD, KQL, NoSQL (CosmosDB), Android Native WebView, RESTful API Design
+\end{itemize}
+
+\section{Professional Experience}
+\begin{itemize}
+  \resumeSubheading{Microsoft}{Mar 2023 -- Present}{Software Engineer 2 \textnormal{\textbar{} Current team: OneDrive and SharePoint}}{Hyderabad, India}
+  \begin{itemize}
+    \resumeItem{Engineered a custom Native Android WebView exposed as a React Native module with disk-based caching and request interception, reducing page load times by \textbf{57\%} (12.9s to 5.5s).}
+    \resumeItem{Led the \textbf{SharePoint News API migration}, delivering revamped architecture and modern UX while mentoring 2 engineers for on-time delivery.}
+    \resumeItem{Owned end-to-end delivery of high-impact React Native features for \textbf{3M+ users}, collaborating with stakeholders to maintain \textbf{99.9\% reliability}.}
+    \resumeItem{Architected a config-based component framework, enabling \textbf{40\% faster} feature development and onboarding for partner teams.}
+    \resumeItem{Authored the \textbf{AI Harness}, a contract-driven framework for spec-validated LLM-assisted engineering.}
+  \end{itemize}
+
+  \resumeSubheading{Microsoft}{Jul 2020 -- Mar 2023}{Software Engineer}{Hyderabad, India}
+  \begin{itemize}
+    \resumeItem{Architected a performant notification system via rigorous API contracts, ensuring low-latency delivery and UI state consistency across partner apps in \textbf{Microsoft Teams}.}
+    \resumeItem{Engineered a data scoping paradigm for \textbf{5+ enterprise scenarios} in a shared JS runtime, enhancing code modularity and security.}
+    \resumeItem{Developed a robust link interception module, directing \textbf{2M+ users} to correct in-app experiences with \textbf{99.9\% production reliability}.}
+    \resumeItem{Created in-app developer diagnostic tools that reduced debugging time by \textbf{60+ man-hours monthly}, boosting overall team velocity.}
+  \end{itemize}
+
+  \resumeSubheading{Samsung Research Institute}{May 2019 -- Jul 2019}{Research Intern (Deep Learning)}{Bengaluru, India}
+  \begin{itemize}
+    \resumeItem{Developed a DL solution to eliminate manual calibration for wearable controllers using TensorFlow and Keras for real-time data.}
+    \resumeItem{Engineered a specialized RNN model to predict calibration parameters, achieving a \textbf{75\% error reduction} via custom loss functions.}
+  \end{itemize}
+
+  \resumeSubheading{Prakshep}{May 2018 -- Jun 2018}{Data Science Intern}{Bengaluru, India}
+  \begin{itemize}
+    \resumeItem{Analyzed Sentinel-2 satellite imagery using Python and OpenCV to classify water bodies and agricultural lands with high accuracy.}
+    \resumeItem{Designed statistical Z-score models for spectral indices to identify harvest windows and outlier plots for precision farming insights.}
+  \end{itemize}
+
+  \resumeSubheading{Farebond}{May 2017 -- Aug 2017}{Data Science Intern}{Bengaluru, India}
+  \begin{itemize}
+    \resumeItem{Built a tier-based pricing model for flight fare locks, categorizing flights by volatility to optimize revenue margins and conversion.}
+    \resumeItem{Developed an automated reporting system using R and R Markdown, saving \textbf{60+ man-hours} of manual data entry work monthly.}
+  \end{itemize}
+\end{itemize}
+
+\section{Technical Projects}
+\begin{itemize}
+  \resumeSubheading{Obsidian MCP Server $|$ \normalfont\small\href{https://github.com/aniketbiswas/obsidian-mcp}{GitHub}}{2025}{TypeScript, Node.js, Model Context Protocol (MCP)}{}
+  \begin{itemize}
+    \resumeItem{Developed an MCP server enabling LLMs to interact with Obsidian vaults for automated note management and searching.}
+    \resumeItem{Implemented secure file system operations and integrated with Obsidian REST API to provide real-time context to AI agents.}
+  \end{itemize}
+
+  \resumeSubheading{Portfolio Website $|$ \normalfont\small\href{https://aniketbiswas.dev}{aniketbiswas.dev}}{2025}{React, JavaScript, Gatsby, GraphQL}{}
+  \begin{itemize}
+    \resumeItem{Built a Gatsby portfolio with GraphQL-sourced Markdown content and a client-fetched Medium RSS feed.}
+    \resumeItem{Added responsive layouts and explicit feed loading, retry, and error handling.}
+  \end{itemize}
+\end{itemize}
+
+\section{Certifications}
+\begin{itemize}[nosep, leftmargin=12pt, label=\textbullet]
+  \item \small{AI Readiness: Intermediate Proficiency, AI Foundations (Skillup AI IDC)}
+  \item \small{Anthropic: Introduction to Model Context Protocol \& Model Context Protocol: Advanced Implementation Topics}
+\end{itemize}
+
+\end{document}

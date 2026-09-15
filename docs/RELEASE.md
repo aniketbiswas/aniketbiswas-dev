@@ -21,9 +21,8 @@ npm run release:plan
 
 The plan reads `public/` and prints paths, byte sizes and SHA-256 hashes. It
 does not upload, delete, purge, change Azure settings or accept `--apply`.
-`npm run deploy` deliberately refuses ambiguous deployment. The explicitly
-named `deploy:github-pages` command is legacy, not Azure; its additive publish
-preserves old remote assets.
+`npm run deploy` deliberately refuses ambiguous deployment. There is no
+GitHub Pages deployment command; the portfolio is hosted by Azure.
 
 Any separately approved Azure portfolio uploader must use only this reviewed
 plan's files and conditional writes to `aniketwebsiteblob/$web`. **Never use

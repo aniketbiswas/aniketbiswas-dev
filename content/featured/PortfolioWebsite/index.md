@@ -1,16 +1,17 @@
 ---
 date: '0'
+priority: 4
 title: 'Personal Portfolio Website'
 cover: './demo.png'
 github: 'https://github.com/aniketbiswas/aniketbiswas-dev'
-external: 'https://aniketbiswas.dev'
+external: ''
 tech:
   - React
-  - TypeScript
+  - JavaScript
   - GraphQL
   - Styled Components
   - Gatsby
   - Responsive Design
 ---
 
-Engineered a data-driven architecture using a GraphQL layer to transform external content and Medium RSS feed data. Integrated automated fallback mechanisms and responsive UI components to ensure seamless cross-device compatibility. The site features smooth animations, optimized performance, and a clean design inspired by modern web standards with sections for work experience, featured projects, blog posts, and contact information.
+A portfolio site built with Gatsby, React, GraphQL, and Styled Components. Experience and project content is maintained in Markdown; the Writing section loads the Medium feed on page visits.

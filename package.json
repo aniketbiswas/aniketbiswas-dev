@@ -23,7 +23,11 @@
     "test:release": "node --test tests/portfolio-release.test.cjs",
     "release:plan": "node scripts/portfolio-release.cjs",
     "deploy": "node scripts/portfolio-release.cjs --deployment-disabled",
-    "deploy:github-pages": "gatsby clean && gatsby build --prefix-paths && node scripts/portfolio-release.cjs && gh-pages --add -d public -b gh-pages",
+    "build:prod": "gatsby clean && gatsby build",
+    "build:resume": "tectonic --untrusted --outdir static docs/resume.tex",
+    "check:site": "node scripts/check-site.js",
+    "test:site-health": "node --test scripts/check-site.test.js",
+    "test:feed": "node --test scripts/medium-feed.test.js",
     "prepare": "husky install",
     "lint-staged": "lint-staged",
     "fix-husky": "rm -rf .husky && husky install && npx husky add .husky/pre-commit \"npm run lint-staged\""
@@ -37,18 +41,13 @@
     ]
   },
   "dependencies": {
-    "animejs": "^3.1.0",
+    "@chenglou/pretext": "^0.0.4",
     "babel-plugin-styled-components": "^1.12.0",
     "gatsby": "^3.4.1",
-    "gatsby-plugin-google-analytics": "^3.4.0",
-    "gatsby-plugin-google-gtag": "^5.15.0",
     "gatsby-plugin-image": "^1.4.0",
     "gatsby-plugin-manifest": "^3.4.0",
-    "gatsby-plugin-netlify": "^3.4.0",
-    "gatsby-plugin-offline": "^4.4.0",
     "gatsby-plugin-react-helmet": "^4.4.0",
     "gatsby-plugin-remove-serviceworker": "^1.0.0",
-    "gatsby-plugin-robots-txt": "^1.5.6",
     "gatsby-plugin-sharp": "^3.4.1",
     "gatsby-plugin-sitemap": "^4.0.0",
     "gatsby-plugin-styled-components": "^4.4.0",
@@ -65,8 +64,6 @@
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
     "react-transition-group": "^4.3.0",
-    "rss2json": "^0.0.4",
-    "scrollreveal": "^4.0.5",
     "styled-components": "^5.3.0"
   },
   "devDependencies": {
@@ -81,7 +78,6 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.23.2",
     "gatsby-remark-code-titles": "^1.1.0",
-    "gh-pages": "^6.3.0",
     "husky": "^6.0.0",
     "lint-staged": "^10.1.2",
     "prettier": "^2.2.1"

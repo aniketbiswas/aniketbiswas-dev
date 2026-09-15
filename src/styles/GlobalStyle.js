@@ -12,6 +12,22 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     width: 100%;
     scroll-behavior: smooth;
+    scroll-padding-top: var(--nav-height);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *:before,
+    *:after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
+    }
   }
 
   *,
@@ -21,14 +37,14 @@ const GlobalStyle = createGlobalStyle`
   }
 
   ::selection {
-    background-color: var(--lightest-navy);
-    color: var(--lightest-slate);
+    background-color: var(--accent-tint-strong);
+    color: var(--accent-strong);
   }
 
   /* Provide basic, default focus styles.*/
   :focus {
-    outline: 2px dashed var(--green);
-    outline-offset: 3px;
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
   }
 
   /*
@@ -46,25 +62,28 @@ const GlobalStyle = createGlobalStyle`
     focus.
   */
   :focus-visible {
-    outline: 2px dashed var(--green);
-    outline-offset: 3px;
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
   }
 
   /* Scrollbar Styles */
   html {
     scrollbar-width: thin;
-    scrollbar-color: var(--dark-slate) var(--navy);
+    scrollbar-color: var(--line-strong) var(--paper);
   }
   ::-webkit-scrollbar {
     width: 12px;
   }
   ::-webkit-scrollbar-track {
-    background: var(--navy);
+    background: var(--paper);
   }
   ::-webkit-scrollbar-thumb {
-    background-color: var(--dark-slate);
-    border: 3px solid var(--navy);
+    background-color: var(--line-strong);
+    border: 3px solid var(--paper);
     border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent);
   }
 
   body {
@@ -74,18 +93,17 @@ const GlobalStyle = createGlobalStyle`
     overflow-x: hidden;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    background-color: var(--navy);
+    background-color: var(--paper);
+    background-image: linear-gradient(rgba(23, 25, 31, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(23, 25, 31, 0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
     color: var(--slate);
     font-family: var(--font-sans);
-    font-size: var(--fz-xl);
-    line-height: 1.3;
+    font-size: var(--fz-lg);
+    line-height: 1.55;
 
     @media (max-width: 480px) {
       font-size: var(--fz-lg);
-    }
-
-    &.hidden {
-      overflow: hidden;
     }
 
     &.blur {
@@ -114,7 +132,7 @@ const GlobalStyle = createGlobalStyle`
   main {
     margin: 0 auto;
     width: 100%;
-    max-width: 1600px;
+    max-width: var(--content-max);
     min-height: 100vh;
     padding: 200px 150px;
 
@@ -129,17 +147,8 @@ const GlobalStyle = createGlobalStyle`
     }
 
     &.fillHeight {
-      padding: 0 150px;
-
-      @media (max-width: 1080px) {
-        padding: 0 100px;
-      }
-      @media (max-width: 768px) {
-        padding: 0 50px;
-      }
-      @media (max-width: 480px) {
-        padding: 0 25px;
-      }
+      max-width: var(--content-max);
+      padding: 0;
     }
   }
 
@@ -157,6 +166,27 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 
+  main.fillHeight > section {
+    max-width: 100%;
+    margin: 0;
+    border-bottom: 1px solid var(--line-frame);
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  main.fillHeight > section:not(:first-child) {
+    padding: var(--section-padding-block, 96px) var(--frame-pad);
+
+    @media (max-width: 900px) {
+      padding: var(--section-padding-block, 80px) 40px;
+    }
+    @media (max-width: 768px) {
+      padding: var(--section-padding-block, 64px) var(--frame-pad-sm);
+    }
+  }
+
   h1,
   h2,
   h3,
@@ -171,59 +201,55 @@ const GlobalStyle = createGlobalStyle`
 
   .big-heading {
     margin: 0;
-    font-size: clamp(40px, 8vw, 80px);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 80px;
+    line-height: 1;
+    letter-spacing: 0;
+
+    @media (max-width: 768px) {
+      font-size: 56px;
+    }
   }
 
   .medium-heading {
     margin: 0;
-    font-size: clamp(40px, 8vw, 60px);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 60px;
+    line-height: 1.02;
+    letter-spacing: 0;
+
+    @media (max-width: 768px) {
+      font-size: 44px;
+    }
   }
 
   .numbered-heading {
-    display: flex;
-    align-items: center;
-    position: relative;
-    margin: 10px 0 40px;
+    position: sticky;
+    top: 0;
+    z-index: 8;
+    display: block;
+    max-width: none;
+    margin: 0 0 24px;
+    padding: 22px 0 18px;
     width: 100%;
-    font-size: clamp(26px, 5vw, var(--fz-heading));
-    white-space: nowrap;
+    background: rgba(243, 241, 235, 0.96);
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line-frame);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 52px;
+    letter-spacing: 0;
+    line-height: 1;
+    color: var(--ink);
 
-    &:before {
-      position: relative;
-      bottom: 4px;
-      counter-increment: section;
-      content: '0' counter(section) '.';
-      margin-right: 10px;
-      color: var(--green);
-      font-family: var(--font-mono);
-      font-size: clamp(var(--fz-md), 3vw, var(--fz-xl));
-      font-weight: 400;
-
-      @media (max-width: 480px) {
-        margin-bottom: -3px;
-        margin-right: 5px;
-      }
-    }
-
-    &:after {
-      content: '';
-      display: block;
-      position: relative;
-      top: -5px;
-      width: 300px;
-      height: 1px;
-      margin-left: 20px;
-      background-color: var(--lightest-navy);
-
-      @media (max-width: 1080px) {
-        width: 200px;
-      }
-      @media (max-width: 768px) {
-        width: 100%;
-      }
-      @media (max-width: 600px) {
-        margin-left: 10px;
-      }
+    @media (max-width: 768px) {
+      margin-bottom: 20px;
+      padding: 16px 0 14px;
+      font-size: 36px;
     }
   }
 
@@ -235,7 +261,6 @@ const GlobalStyle = createGlobalStyle`
     vertical-align: middle;
   }
 
-  img[alt=""],
   img:not([alt]) {
     filter: blur(5px);
   }
@@ -303,11 +328,12 @@ const GlobalStyle = createGlobalStyle`
     }
 
     & > code {
-      background-color: var(--light-navy);
-      color: var(--white);
+      background-color: var(--accent-tint);
+      color: var(--accent-strong);
       font-size: var(--fz-sm);
-      border-radius: var(--border-radius);
-      padding: 0.3em 0.5em;
+      border: 1px solid var(--accent-tint-strong);
+      border-radius: var(--radius-sm);
+      padding: 0.2em 0.45em;
     }
   }
 
@@ -447,10 +473,10 @@ const GlobalStyle = createGlobalStyle`
 
   ${PrismStyles};
 
-  /* Cursor Halo Effect - Torch/Candle Light */
+  /* Cursor Spotlight — a soft warm light catching the paper */
   body {
-    --cursor-x: 0px;
-    --cursor-y: 0px;
+    --cursor-x: 50%;
+    --cursor-y: 50%;
   }
 
   body::before {
@@ -458,30 +484,26 @@ const GlobalStyle = createGlobalStyle`
     position: fixed;
     top: var(--cursor-y);
     left: var(--cursor-x);
-    width: 800px;
-    height: 800px;
+    width: 620px;
+    height: 620px;
     background: radial-gradient(
       circle,
-      /* White center with less gradual but more blurred transitions */
-      rgba(186, 223, 255, 0.13) 0%,
-      rgba(186, 223, 255, 0.06) 24%,
-      rgba(225, 241, 255, 0.015) 40%,
-      rgba(225, 241, 255, 0.004) 56%,
-      rgba(225, 241, 255, 0.001) 72%,
-      transparent 80%
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(94, 234, 212, 0.08) 30%,
+      rgba(255, 255, 255, 0) 70%
     );
     border-radius: 50%;
     pointer-events: none;
-    z-index: 10000;
+    z-index: -1;
     transform: translate(-50%, -50%);
     transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     opacity: 0;
-    filter: blur(15px);
-    mix-blend-mode: screen;
+    filter: blur(20px);
+    mix-blend-mode: normal;
   }
 
   body.cursor-visible::before {
-    opacity: 0.8;
+    opacity: 0.65;
   }
 `;
 

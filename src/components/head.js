@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { useLocation } from '@reach/router';
 import { useStaticQuery, graphql } from 'gatsby';
+import { socialMedia } from '@config';
 
 // https://www.gatsbyjs.com/docs/add-seo-component/
 
@@ -35,6 +36,19 @@ const Head = ({ title, description, image }) => {
     url: `${siteUrl}${pathname}`,
   };
 
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Aniket Biswas',
+    url: siteUrl,
+    jobTitle: 'Software Engineer II',
+    worksFor: {
+      '@type': 'Organization',
+      name: 'Microsoft',
+    },
+    sameAs: socialMedia.map(({ url }) => url),
+  };
+
   return (
     <Helmet title={title} defaultTitle={seo.title} titleTemplate={`%s | ${defaultTitle}`}>
       <html lang="en" />
@@ -47,6 +61,7 @@ const Head = ({ title, description, image }) => {
       <meta property="og:image" content={seo.image} />
       <meta property="og:url" content={seo.url} />
       <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="Aniket Biswas" />
 
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:creator" content={twitterUsername} />
@@ -56,9 +71,12 @@ const Head = ({ title, description, image }) => {
 
       <meta name="google-site-verification" content="DCl7VAf9tcz6eD9gb67NfkNnJ1PKRNcg8qQiwpbx9Lk" />
 
+      <link rel="canonical" href={seo.url} />
       <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
       <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+      <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
     </Helmet>
   );
 };
