@@ -8,5 +8,5 @@ range: 'May 2019 - July 2019'
 url: 'https://research.samsung.com/sri-b'
 ---
 
-- Developed a DL solution to eliminate manual calibration for wearable controllers using TensorFlow and Keras for real-time data
-- Engineered a specialized RNN model to predict calibration parameters, achieving a 75% error reduction via custom loss functions
+- Trained a TensorFlow and Keras model to replace manual calibration for wearable controllers using live sensor data
+- Designed a specialized RNN and custom loss function that reduced error by 75%

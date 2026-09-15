@@ -1,15 +1,17 @@
 ---
 date: '8'
+priority: 3
 title: 'EthPhoto'
 cover: './demo.png'
-github: 'https://github.com/aniketbiswas21/EthPhoto'
+github: 'https://github.com/aniketbiswas/EthPhoto'
 external: ''
 tech:
   - Ethereum
   - IPFS
-  - React
   - Solidity
-  - Web3.js
+  - JavaScript
+  - Embark
+  - jQuery
 ---
 
-A decentralized application for geo-tagged media sharing on Ethereum blockchain. Implemented Ethereum-IPFS hybrid storage solution for efficient decentralized media storage with location metadata, enabling censorship-resistant photo sharing. Built a responsive React-based web interface with Metamask integration for wallet connectivity.
+A decentralized application for geo-tagged media sharing using Ethereum smart contracts and IPFS, with an Embark-based JavaScript and jQuery interface.

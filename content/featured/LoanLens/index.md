@@ -1,5 +1,6 @@
 ---
 date: '5'
+priority: 5
 title: 'LoanLens'
 cover: './demo.png'
 external: '/loanlens'
