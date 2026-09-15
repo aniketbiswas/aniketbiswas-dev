@@ -3,8 +3,9 @@
 The portfolio and LoanLens share public hostnames, not deployment ownership.
 LoanLens source, tests, build and releases belong to the private
 `aniketbiswas/loanlens` repository. Only its built public assets are published.
-The portfolio retains `content/featured/LoanLens/index.md` and its native
-`<a href="/loanlens">` link; do not replace it with a Gatsby page-data link.
+The portfolio retains `content/featured/LoanLens/index.md` and links to `/loanlens`
+from both the featured project and the footer. Use native `<a href="/loanlens">`
+links; do not replace them with Gatsby page-data links.
 
 ## Portfolio release gate
 
