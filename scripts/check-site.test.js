@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict');
 const { test } = require('node:test');
 const http = require('http');
-const { checkUrl, validateCertificate } = require('./check-site');
+const { checkSite, checkUrl, validateCertificate } = require('./check-site');
 
 async function serve(t, handler) {
   const server = http.createServer(handler);
@@ -118,4 +118,33 @@ test('rejects unsupported URL protocols', async () => {
     checkUrl('file:///tmp/resume.pdf', { contentType: 'application/pdf' }),
     /Unsupported URL protocol/,
   );
+});
+
+test('portfolio-only preview excludes separate app but public checks retain it', async t => {
+  const requested = [];
+  const base = await serve(t, (req, res) => {
+    requested.push(req.url);
+    const contentType =
+      req.url === '/resume.pdf'
+        ? 'application/pdf'
+        : req.url === '/og.png'
+        ? 'image/png'
+        : 'text/html';
+    res.writeHead(200, { 'Content-Type': contentType });
+    res.end(
+      '<h1 id="hero-title"></h1><h2 id="playground-title"></h2>' +
+        '<h2 id="liquid-typography-title"></h2><main data-storage="browser"></main>',
+    );
+  });
+  await checkSite(base, { portfolioOnly: true });
+  assert.equal(requested.length, 5);
+  assert.equal(
+    requested.some(url => url.startsWith('/loanlens')),
+    false,
+  );
+  requested.length = 0;
+  await checkSite(base);
+  assert.equal(requested.length, 7);
+  assert.ok(requested.includes('/loanlens'));
+  assert.ok(requested.includes('/loanlens/'));
 });

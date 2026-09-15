@@ -89,6 +89,7 @@ ESLint uses the Prettier compatibility preset so their formatting rules do not c
 
 ```sh
 npm run test:site-health
+npm run test:release
 npm run build:prod
 npm run serve
 ```
@@ -96,11 +97,14 @@ npm run serve
 With the production preview running, use another terminal to check its actual pages and assets:
 
 ```sh
-npm run check:site -- http://localhost:9000
+npm run check:site -- http://localhost:9000 --portfolio-only
 ```
 
-The check verifies the homepage, résumé PDF, social preview image, Playground routes, and both
-clean LoanLens addresses.
+The local check verifies the homepage, résumé PDF, social preview image, and Playground routes.
+LoanLens is built and published by the separate private `aniketbiswas/loanlens` repository,
+so `--portfolio-only` excludes it from this local preview. The default public check still
+verifies both clean LoanLens addresses. See [release ownership](docs/RELEASE.md) before publishing;
+never delete old LoanLens blobs because they are absent from a portfolio build.
 It checks content types and page markers so a fallback HTML page cannot masquerade as a PDF
 or a missing route. HTTP previews do not perform certificate checks.
 

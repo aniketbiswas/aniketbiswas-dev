@@ -11,52 +11,27 @@ and `/loanlens/` serve the calculator directly, without redirecting to a file
 URL. The existing `/tools/loanlens/index.html` and `/tools/loanlens/` addresses
 remain available.
 
-During `yarn build`, Gatsby copies `static/tools/loanlens/` unchanged into
-`public/tools/loanlens/`. The `onPostBuild` hook in `gatsby-node.js` then generates
-`public/loanlens/index.html` from that same source document; do not maintain a
-second HTML copy. This entry sets an early `<base href="/tools/loanlens/">` so
-all assets and `document.baseURI`-derived scenario/theme storage keys retain
-their original namespace. Existing remembered plans and theme choices work
-at either address without migration. Canonical and Open Graph URL metadata
-point to `/loanlens`. A small inline script keeps fragment links, including
-the skip link, on the current friendly page rather than the asset directory.
-Any future Content Security Policy must permit the same-origin base and this
-script. No CSP currently blocks them on the Storage/Front Door site.
+LoanLens now has separate source/build ownership in the private
+`aniketbiswas/loanlens` repository and a dedicated Storage origin. See
+[RELEASE.md](RELEASE.md) for deployment identities, the traffic approval gate,
+cached-client compatibility, and version-2-safe rollback.
 
-The ten original HTML, CSS, JavaScript, SVG, and PNG files stay together.
-No API, server, additional package, or Gatsby page is required.
+Portfolio builds no longer copy the calculator or generate its friendly HTML.
+They fail if either LoanLens namespace is present in source/output. The
+featured project metadata and native `<a href="/loanlens">` remain; do not use
+a Gatsby `Link` or import calculator styles/scripts into the portfolio.
 
-`content/featured/LoanLens/index.md` adds a featured project using the existing
-native `<a href="/loanlens">` convention. Do not
-replace it with a Gatsby `Link`: this standalone document has no Gatsby
-page-data. Its global styles and scripts must not be imported into the portfolio.
+Removing source is **not** authorization to delete old deployed blobs.
+Preserve both calculator prefixes in `aniketwebsiteblob/$web`, all cached
+unversioned modules, and prior immutable releases. Do not deploy this older
+portfolio build as part of separating LoanLens.
 
-Calculations run locally with generic example inputs. `data-storage="browser"`
-must remain on the HTML root. Financial scenario storage is opt-in; the
-separate theme preference does not enable saving. The page loads no analytics
-or third-party resources. Other scripts on the same origin can access browser
-storage, so do not add session replay or tracking to this document.
-
-For an initial calculator release, upload **only** the ten files from
-`public/tools/loanlens/` to the matching `tools/loanlens/` prefix and the generated
-`public/loanlens/index.html` to `loanlens/index.html` in the existing `$web`
-container. If the original assets are already live and unchanged, adding the
-friendly address requires uploading only `loanlens/index.html`. Storage's
-existing directory-index behavior and Front Door wildcard route serve both
-friendly paths; no routing infrastructure changes are needed.
-Preserve all other blobs, including the live homepage.
-Publish the featured project through a later, deliberate portfolio deployment;
-the isolated upload does not update the homepage. Do not deploy an older full
-portfolio build just to add this tool.
-
-Set `.html` to `text/html`, `.css` to `text/css`, `.js` to `text/javascript`,
-`.svg` to `image/svg+xml`, and `.png` to `image/png`. Check the exact public
-URLs (with and without the trailing slash), reload, skip link, saved-plan/theme
-compatibility, and supporting assets after upload, including the versioned icons.
-The existing Front Door wildcard route serves the prefix without new
-infrastructure. For a future SWA deployment, exact friendly routes rewrite to
-the generated HTML and both calculator prefixes are excluded from the existing
-navigation fallback without changing global site headers.
+The separate application keeps its early `<base href="/tools/loanlens/">`,
+same-document fragment handling, browser storage and lock namespace, opt-in
+financial saving, and no analytics/third-party resources. Both existing www
+and apex hostnames remain reachable without storage migration or redirects.
+Storage ignores SWA configuration: the retained fallback exclusions in that file
+do not create Front Door routes or configure response security headers.
 
 ## Actual hosting architecture
 
@@ -104,39 +79,33 @@ npm run serve -- --host 127.0.0.1
 In another terminal:
 
 ```sh
-npm run check:site -- http://127.0.0.1:9000
+npm run check:site -- http://127.0.0.1:9000 --portfolio-only
 ```
 
 This checks the actual production HTML and asset response types, not just whether the server
 returns HTTP 200. The homepage, résumé, social preview image, Playground index, and Liquid
-Typography page, and clean LoanLens addresses must all resolve correctly. HTTP previews skip
-certificate validation.
+Typography page must all resolve correctly. The separate LoanLens origin is not included in
+this local portfolio build. Default public checks still include both clean LoanLens addresses.
+HTTP previews skip certificate validation.
 
 ## Publish reviewed output
 
-Review the local changes and complete the production checks before publishing. Upload the
-**contents of `public/` only** to the existing storage account's `$web` container.
-
-For an authenticated account with the required Blob Storage data permissions:
+Review the local changes and complete the production checks before publishing:
 
 ```sh
-az login
-az storage blob upload-batch \
-  --account-name aniketwebsiteblob \
-  --auth-mode login \
-  --destination '$web' \
-  --source ./public \
-  --overwrite true
+npm run test:release
+npm run release:plan
 ```
 
-This command replaces live files. It is not part of local development or the health workflow.
-Do not upload the repository root, local configuration, or credentials. If data-plane access is
-denied, use the existing authorized deployment workflow; do not place account keys in source.
-If the authenticated deployment account already has permission to query the storage account key,
-`--auth-mode key` lets Azure CLI obtain and use that key internally. Do not print or store the key
-in repository files.
+The plan contains only portfolio output and refuses LoanLens namespaces, including stale
+files. Follow [RELEASE.md](RELEASE.md) for separately approved, conditional uploads to
+`aniketwebsiteblob/$web` using `--auth-mode login`. Back up replaced documents and stop
+on ETag conflicts. Do not bulk overwrite, sync/delete absent files, change old LoanLens blobs,
+or publish the repository root, local configuration, or credentials. If scoped data-plane
+access is denied, resolve the deployment identity rather than retrieving account keys.
 
-After uploading the generated `404.html`, configure Storage to serve it for missing paths:
+For a separately approved portfolio hosting update after uploading the generated `404.html`,
+Storage can serve it for missing paths:
 
 ```sh
 az storage blob service-properties update \
@@ -147,11 +116,11 @@ az storage blob service-properties update \
   --404-document 404.html
 ```
 
-Keep `index.html` as the directory index, not the error document. Gatsby routes and the clean
-LoanLens address have their own generated index files; unknown paths should return HTTP 404
+Keep `index.html` as the directory index, not the error document. Gatsby routes and LoanLens
+have generated index files on their respective origins; unknown paths should return HTTP 404
 with the actual not-found page instead of the homepage.
 
-Preserve the existing Front Door route and origin configuration. For new Gatsby pages, verify
+Preserve the existing default Front Door route and portfolio origin configuration. For new Gatsby pages, verify
 their direct URLs after deployment, including a fresh browser visit rather than only client-side
 navigation. Directory/index handling and the storage account's error document must serve the
 expected page; a generic HTML fallback is not proof that a route works.

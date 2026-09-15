@@ -125,18 +125,29 @@ async function checkUrl(
   return { url: url.href, contentType };
 }
 
-async function checkSite(baseUrl = siteMetadata.siteUrl) {
-  for (const check of SITE_CHECKS) {
+async function checkSite(baseUrl = siteMetadata.siteUrl, { portfolioOnly = false } = {}) {
+  const checks = portfolioOnly
+    ? SITE_CHECKS.filter(check => !['/loanlens', '/loanlens/'].includes(check.path))
+    : SITE_CHECKS;
+  for (const check of checks) {
     const result = await checkUrl(new URL(check.path, baseUrl), check);
     process.stdout.write(`OK ${result.url} (${result.contentType})\n`);
   }
 }
 
 if (require.main === module) {
-  checkSite(process.argv[2]).catch(error => {
-    console.error(`Site health check failed: ${error.message}`);
+  const args = process.argv.slice(2);
+  const portfolioOnly = args.includes('--portfolio-only');
+  const positional = args.filter(arg => arg !== '--portfolio-only');
+  if (positional.length > 1 || positional.some(arg => arg.startsWith('-'))) {
+    console.error('Usage: node scripts/check-site.js [base-url] [--portfolio-only]');
     process.exitCode = 1;
-  });
+  } else {
+    checkSite(positional[0], { portfolioOnly }).catch(error => {
+      console.error(`Site health check failed: ${error.message}`);
+      process.exitCode = 1;
+    });
+  }
 }
 
 module.exports = { checkSite, checkUrl, validateCertificate };
