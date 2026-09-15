@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
@@ -21,11 +22,16 @@ const StyledHamburgerButton = styled.button`
     ${({ theme }) => theme.mixins.flexCenter};
     position: relative;
     z-index: 10;
+    gap: 12px;
     margin-right: -15px;
     padding: 15px;
     border: 0;
     background-color: transparent;
     color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--fz-md);
+    font-weight: 600;
+    line-height: 1;
     text-transform: none;
     transition-timing-function: linear;
     transition-duration: 0.15s;
@@ -143,6 +149,13 @@ const StyledSidebar = styled.aside`
       ${({ theme }) => theme.mixins.link};
       width: 100%;
       padding: 15px 0 12px;
+
+      &[aria-current='location'] {
+        color: var(--accent-strong);
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 6px;
+      }
     }
   }
 
@@ -154,7 +167,7 @@ const StyledSidebar = styled.aside`
   }
 `;
 
-const Menu = () => {
+const Menu = ({ activeSection = '' }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
@@ -221,10 +234,11 @@ const Menu = () => {
           onClick={toggleMenu}
           menuOpen={menuOpen}
           ref={buttonRef}
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-label={menuOpen ? 'Close sections menu' : 'Open sections menu'}
           aria-expanded={menuOpen}
           aria-controls="mobile-navigation">
-          <div className="ham-box">
+          <span>Sections</span>
+          <div className="ham-box" aria-hidden="true">
             <div className="ham-box-inner" />
           </div>
         </StyledHamburgerButton>
@@ -233,9 +247,12 @@ const Menu = () => {
           <nav id="mobile-navigation" ref={navRef} aria-label="Mobile navigation">
             {navLinks && (
               <ol>
-                {navLinks.map(({ url, name }, i) => (
-                  <li key={i}>
-                    <Link to={url} onClick={() => setMenuOpen(false)}>
+                {navLinks.map(({ url, name }) => (
+                  <li key={url}>
+                    <Link
+                      to={url}
+                      aria-current={activeSection === url.split('#')[1] ? 'location' : undefined}
+                      onClick={() => setMenuOpen(false)}>
                       {name}
                     </Link>
                   </li>
@@ -256,6 +273,10 @@ const Menu = () => {
       </div>
     </StyledMenu>
   );
+};
+
+Menu.propTypes = {
+  activeSection: PropTypes.string,
 };
 
 export default Menu;

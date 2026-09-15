@@ -101,6 +101,7 @@ const StyledHeroSection = styled.section`
 
   .hero-role {
     max-width: 690px;
+    text-wrap: balance;
     margin: 30px 0 0;
     color: var(--ink-soft);
     font-family: var(--font-serif);
@@ -227,10 +228,11 @@ const Hero = () => (
         <h1 id="hero-title">
           Aniket Biswas<span aria-hidden="true">.</span>
         </h1>
-        <p className="hero-role">I build web and mobile experiences.</p>
+        <p className="hero-role">Understanding problems. Building useful software.</p>
         <p className="hero-description">
-          I’m a Software Engineer II on Microsoft’s OneDrive and SharePoint team, building the AI
-          Harness for spec-driven product development.
+          I’m a Software Engineer II at Microsoft, working across products, systems, and AI. On the
+          OneDrive and SharePoint team, I’m building the AI Harness for spec-driven product
+          development.
         </p>
 
         <div className="hero-actions">

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'gatsby';
 import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { navLinks } from '@config';
-import { useScrollDirection } from '@hooks';
 import { Menu } from '@components';
 import pixelComputer from '@images/pixel-computer.png';
 
@@ -12,24 +11,11 @@ const StyledHeader = styled.header`
   top: 0;
   z-index: 11;
   width: 100%;
-  height: ${({ scrolledToTop }) =>
-    scrolledToTop ? 'var(--nav-height)' : 'var(--nav-scroll-height)'};
+  height: var(--nav-height);
   background: rgba(243, 241, 235, 0.9);
   border-bottom: 1px solid var(--line-frame);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  transition: transform 0.25s var(--easing);
-
-  &:focus-within {
-    transform: translateY(0);
-  }
-
-  ${({ scrollDirection, scrolledToTop }) =>
-    scrollDirection === 'down' &&
-    !scrolledToTop &&
-    css`
-      transform: translateY(-100%);
-    `};
 `;
 
 const StyledNav = styled.nav`
@@ -148,8 +134,6 @@ const StyledLinks = styled.div`
 `;
 
 const Nav = ({ isHome }) => {
-  const scrollDirection = useScrollDirection({ initialDirection: 'down' });
-  const [scrolledToTop, setScrolledToTop] = useState(true);
   const [activeSection, setActiveSection] = useState('');
 
   useEffect(() => {
@@ -158,7 +142,6 @@ const Nav = ({ isHome }) => {
 
     const updateHeader = () => {
       const isAtTop = window.pageYOffset < 40;
-      setScrolledToTop(isAtTop);
 
       if (!isHome || isAtTop) {
         setActiveSection('');
@@ -191,7 +174,7 @@ const Nav = ({ isHome }) => {
   }, [isHome]);
 
   return (
-    <StyledHeader scrollDirection={scrollDirection} scrolledToTop={scrolledToTop}>
+    <StyledHeader>
       <StyledNav aria-label="Primary navigation">
         <Link className="brand" to="/" aria-label="Aniket Biswas, home">
           <span className="brand-mark" aria-hidden="true">
@@ -221,7 +204,7 @@ const Nav = ({ isHome }) => {
           </a>
         </StyledLinks>
 
-        <Menu />
+        <Menu activeSection={activeSection} />
       </StyledNav>
     </StyledHeader>
   );
