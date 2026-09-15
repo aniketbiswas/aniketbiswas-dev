@@ -126,16 +126,25 @@ Site content is authored as markdown under `content/`:
 
 Design tokens live in [src/styles/variables.js](./src/styles/variables.js).
 
-Experience follows the hero, ahead of selected work. It shows the two most recent roles first;
-the remaining roles are available in a native “Earlier experience” disclosure, including
-without JavaScript. The standalone metrics strip and project outcome framing are omitted.
-Existing achievement figures remain scoped to their original roles.
+A compact About section follows the hero, then Experience, selected work, Writing, Credentials,
+and Contact. The fixed header stays visible while scrolling; desktop links and the mobile
+“Sections” menu use the same ordered links and indicate the current section. Sticky section
+headings sit below the header, and anchor targets retain enough clearance to stay readable.
+
+Experience shows the two most recent roles first; the remaining roles are available in a
+native “Earlier experience” disclosure, including without JavaScript. The standalone metrics
+strip and project outcome framing are omitted. Existing achievement figures remain scoped
+to their original roles.
 
 The latest role can include an optional `currentTeam` field. It is shown separately from
 employment dates so a team change does not imply a new role or rewrite historical achievements.
-Current profile copy uses the owner-confirmed OneDrive and SharePoint team name. The AI-assisted
-SDLC positioning is grounded in the supplied AI Harness, MCP, API, and deep-learning experience;
-it does not claim a fully autonomous lifecycle or introduce new performance figures.
+Current profile copy uses the owner-confirmed OneDrive and SharePoint team name. The hero and
+About describe problem-solving across products, systems, and AI, grounded in the supplied
+product, native Android, notification-system, AI Harness, MCP, and deep-learning experience.
+The AI Harness is current work, not a limit on the engineer's scope. The copy does not claim
+expertise in every technology, a fully autonomous lifecycle, or new performance figures.
+Keep the tone matter-of-fact: concrete contributions, learning, and collaboration rather than
+self-promotional superlatives.
 
 Keep copy grounded in published content, the actual implementation, or facts explicitly supplied
 by the site owner. Do not invent personal motivations, current initiatives, reading-time estimates,

@@ -4,7 +4,7 @@ module.exports = {
   siteMetadata: {
     title: 'Aniket Biswas | Software Engineer',
     description:
-      'Software Engineer II on Microsoft’s OneDrive and SharePoint team, building the AI Harness for spec-driven product development.',
+      'Software Engineer II on Microsoft’s OneDrive and SharePoint team, with work spanning products, systems, and AI-assisted engineering.',
     siteUrl: 'https://aniketbiswas.dev',
     image: '/og.png',
     twitterUsername: '@aniket__biswas',

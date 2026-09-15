@@ -2,6 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 
 const StyledAboutSection = styled.section`
+  --section-padding-block: 64px;
+
+  @media (max-width: 768px) {
+    --section-padding-block: 48px;
+  }
+
   .about-grid {
     display: grid;
     grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.25fr);
@@ -17,6 +23,7 @@ const StyledAboutSection = styled.section`
   .about-lead {
     position: relative;
     margin: 0;
+    text-wrap: balance;
     padding-left: 24px;
     color: var(--ink);
     font-family: var(--font-serif);
@@ -57,7 +64,7 @@ const StyledAboutSection = styled.section`
     grid-template-columns: 190px minmax(0, 1fr);
     gap: 42px;
     align-items: start;
-    margin-top: 54px;
+    margin-top: 34px;
 
     @media (max-width: 700px) {
       grid-template-columns: 1fr;
@@ -98,14 +105,14 @@ const StyledAboutSection = styled.section`
 `;
 
 const skills = [
-  'MCP & LLM Integration',
-  'OpenAI & Anthropic APIs',
-  'Azure AI Foundry',
-  'Python/TensorFlow/Keras',
   'JavaScript/TypeScript',
   'React/React Native',
   'Node.js/Go',
   'GraphQL/REST APIs',
+  'Python/TensorFlow/Keras',
+  'MCP & LLM Integration',
+  'OpenAI & Anthropic APIs',
+  'Azure AI Foundry',
 ];
 
 const About = () => (
@@ -113,18 +120,18 @@ const About = () => (
     <h2 className="numbered-heading">About me</h2>
 
     <div className="about-grid">
-      <p className="about-lead">AI-assisted SDLC and developer tooling.</p>
+      <p className="about-lead">Work across products, systems, and AI.</p>
 
       <div className="about-copy">
         <p>
-          I build developer tooling for an AI-assisted software development lifecycle (SDLC). At
-          Microsoft, I authored the AI Harness, a contract-driven framework for spec-validated
-          LLM-assisted engineering.
+          At Microsoft, I’ve worked on React Native features used by millions, native Android
+          integrations, and notification systems for Teams. These projects have involved product
+          development, API design, performance, and reliability.
         </p>
         <p>
-          I also developed the Obsidian Model Context Protocol (MCP) server for AI-assisted note
-          management. My earlier deep-learning work at Samsung Research used TensorFlow and Keras
-          for an RNN-based wearable-controller calibration model.
+          My experience also includes the AI Harness for spec-driven development, the Obsidian MCP
+          server, and deep-learning work at Samsung Research. I focus on understanding the problem,
+          learning what’s needed, and working with others to find an approach that fits.
         </p>
       </div>
     </div>

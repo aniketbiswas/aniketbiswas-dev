@@ -227,7 +227,7 @@ const GlobalStyle = createGlobalStyle`
 
   .numbered-heading {
     position: sticky;
-    top: 0;
+    top: var(--nav-height);
     z-index: 8;
     display: block;
     max-width: none;
