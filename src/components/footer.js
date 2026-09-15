@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
+import { usePrefersReducedMotion } from '@hooks';
 import pixelDuck from '@images/pixel-duck.png';
 
 const StyledFooter = styled.footer`
@@ -55,9 +56,25 @@ const StyledFooter = styled.footer`
     color: var(--warm);
   }
 
+  .footer-duck-control {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 50px;
+    padding: 0;
+    background: transparent;
+    border-radius: var(--radius-sm);
+
+    &:disabled {
+      cursor: default;
+    }
+  }
+
   .footer-duck {
-    width: 32px;
-    height: 33px;
+    width: 48px;
+    height: 50px;
     object-fit: contain;
     image-rendering: pixelated;
   }
@@ -85,25 +102,102 @@ const StyledFooter = styled.footer`
   }
 `;
 
-const Footer = () => (
-  <StyledFooter>
-    <div className="footer-inner">
-      <p className="footer-mark">
-        <img className="footer-duck" src={pixelDuck} width="32" height="33" alt="" loading="lazy" />
-        <span>
-          Aniket Biswas<span className="footer-dot">.</span>
-        </span>
-      </p>
-      <nav className="footer-links" aria-label="Footer">
-        <Link to="/playground">Playground</Link>
-        <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
-          Résumé
-        </a>
-        <a href="/loanlens">LoanLens</a>
-      </nav>
-      <p>Built with Gatsby · © {new Date().getFullYear()}</p>
-    </div>
-  </StyledFooter>
-);
+const Footer = () => {
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [isInteractive, setIsInteractive] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const duckRef = useRef(null);
+  const hasAutoPlayed = useRef(false);
+
+  useEffect(() => {
+    setIsInteractive(true);
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      setIsPlaying(false);
+    }
+    if (typeof IntersectionObserver === 'undefined') {
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || document.hidden) {
+          setIsPlaying(false);
+        } else if (!prefersReducedMotion && !hasAutoPlayed.current) {
+          hasAutoPlayed.current = true;
+          setIsPlaying(true);
+        }
+      },
+      { threshold: 0.5 },
+    );
+    observer.observe(duckRef.current);
+    return () => observer.disconnect();
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    if (!isPlaying) {
+      return undefined;
+    }
+
+    const timeout = window.setTimeout(() => setIsPlaying(false), 3000);
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        setIsPlaying(false);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => {
+      window.clearTimeout(timeout);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, [isPlaying]);
+
+  const animationLabel = isPlaying ? 'Pause Psyduck animation' : 'Play Psyduck animation';
+
+  return (
+    <StyledFooter>
+      <div className="footer-inner">
+        <p className="footer-mark">
+          <button
+            className="footer-duck-control"
+            type="button"
+            ref={duckRef}
+            disabled={!isInteractive}
+            onClick={() => setIsPlaying(playing => !playing)}
+            aria-label={animationLabel}
+            title={animationLabel}>
+            <img
+              className="footer-duck"
+              src={isPlaying ? '/images/pixel-duck.gif' : pixelDuck}
+              width="48"
+              height="50"
+              alt=""
+              loading="lazy"
+              onError={() => {
+                if (isPlaying) {
+                  console.warn('The Psyduck animation could not be loaded.');
+                  setIsPlaying(false);
+                }
+              }}
+            />
+          </button>
+          <span>
+            Aniket Biswas<span className="footer-dot">.</span>
+          </span>
+        </p>
+        <nav className="footer-links" aria-label="Footer">
+          <Link to="/playground">Playground</Link>
+          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+            Résumé
+          </a>
+          <a href="/loanlens">LoanLens</a>
+        </nav>
+        <p>Built with Gatsby · © {new Date().getFullYear()}</p>
+      </div>
+    </StyledFooter>
+  );
+};
 
 export default Footer;
