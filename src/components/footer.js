@@ -64,6 +64,7 @@ const StyledFooter = styled.footer`
 
   .footer-links {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 22px;
 
@@ -98,6 +99,7 @@ const Footer = () => (
         <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
           Résumé
         </a>
+        <a href="/loanlens">LoanLens</a>
       </nav>
       <p>Built with Gatsby · © {new Date().getFullYear()}</p>
     </div>
