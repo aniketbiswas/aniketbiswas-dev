@@ -5,8 +5,8 @@
  */
 
 const path = require('path');
-const fs = require('fs').promises;
 const _ = require('lodash');
+const { assertPortfolioTree } = require('./scripts/portfolio-release.cjs');
 
 // Define schema for custom fields
 exports.createSchemaCustomization = ({ actions }) => {
@@ -91,38 +91,9 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   });
 };
 
-exports.onPostBuild = async ({ store }) => {
-  const source = await fs.readFile(
-    path.join(__dirname, 'static/tools/loanlens/index.html'),
-    'utf8',
-  );
-  if (!source.includes('<head>') || !source.includes('</body>')) {
-    throw new Error('LoanLens entry requires a complete HTML document.');
-  }
+exports.onPreBootstrap = () => assertPortfolioTree(path.join(__dirname, 'static'));
 
-  const canonical = new URL('/loanlens', store.getState().config.siteMetadata.siteUrl).href;
-  const entry = source
-    .replace(
-      '<head>',
-      `<head>
-  <base href="/tools/loanlens/">
-  <link rel="canonical" href="${canonical}">
-  <meta property="og:url" content="${canonical}">`,
-    )
-    .replace(
-      '</body>',
-      `  <script>
-    // A base URL must not send same-document links back to the asset directory.
-    document.querySelectorAll('a[href^="#"]').forEach(function (link) {
-      link.href = window.location.pathname + window.location.search + link.getAttribute('href');
-    });
-  </script>
-</body>`,
-    );
-  const output = path.join(__dirname, 'public/loanlens');
-  await fs.mkdir(output, { recursive: true });
-  await fs.writeFile(path.join(output, 'index.html'), entry);
-};
+exports.onPostBuild = () => assertPortfolioTree(path.join(__dirname, 'public'));
 
 // https://www.gatsbyjs.org/docs/node-apis/#onCreateWebpackConfig
 exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {

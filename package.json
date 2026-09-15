@@ -20,7 +20,10 @@
     "start": "npm run develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "deploy": "gatsby clean && gatsby build --prefix-paths && gh-pages -d public -b gh-pages",
+    "test:release": "node --test tests/portfolio-release.test.cjs",
+    "release:plan": "node scripts/portfolio-release.cjs",
+    "deploy": "node scripts/portfolio-release.cjs --deployment-disabled",
+    "deploy:github-pages": "gatsby clean && gatsby build --prefix-paths && node scripts/portfolio-release.cjs && gh-pages --add -d public -b gh-pages",
     "prepare": "husky install",
     "lint-staged": "lint-staged",
     "fix-husky": "rm -rf .husky && husky install && npx husky add .husky/pre-commit \"npm run lint-staged\""
