@@ -126,10 +126,18 @@ Site content is authored as markdown under `content/`:
 
 Design tokens live in [src/styles/variables.js](./src/styles/variables.js).
 
-A compact About section follows the hero, then Experience, selected work, Writing, Credentials,
-and Contact. The fixed header stays visible while scrolling; desktop links and the mobile
+A single introduction combines the hero and About content, followed by Experience, selected
+work, Writing, Credentials, and Contact. The About link targets this introduction, including
+when returning from another section or page. Its smaller portrait supports two short paragraphs
+instead of competing with the text. The technology list is always visible, including without
+JavaScript. The introduction retains a résumé link; selected work is reached through the
+persistent navigation rather than an additional hero button.
+
+The fixed header stays visible while scrolling; desktop links and the mobile
 “Sections” menu use the same ordered links and indicate the current section. Sticky section
 headings sit below the header, and anchor targets retain enough clearance to stay readable.
+Whitespace separates sections without extra bottom dividers; the rules framing section
+headings remain.
 
 Experience shows the two most recent roles first; the remaining roles are available in a
 native “Earlier experience” disclosure, including without JavaScript. The standalone metrics
@@ -138,13 +146,14 @@ to their original roles.
 
 The latest role can include an optional `currentTeam` field. It is shown separately from
 employment dates so a team change does not imply a new role or rewrite historical achievements.
-Current profile copy uses the owner-confirmed OneDrive and SharePoint team name. The hero and
-About describe problem-solving across products, systems, and AI, grounded in the supplied
+Current profile copy uses the owner-confirmed OneDrive and SharePoint team name. The introduction
+describes problem-solving across products, systems, and AI, grounded in the supplied
 product, native Android, notification-system, AI Harness, MCP, and deep-learning experience.
 The AI Harness is current work, not a limit on the engineer's scope. The copy does not claim
 expertise in every technology, a fully autonomous lifecycle, or new performance figures.
 Keep the tone matter-of-fact: concrete contributions, learning, and collaboration rather than
-self-promotional superlatives.
+self-promotional superlatives or generic statements about approach. The introduction describes
+the AI Harness and its use on an app-revamp feature without repeating the delivery metric.
 
 Keep copy grounded in published content, the actual implementation, or facts explicitly supplied
 by the site owner. Do not invent personal motivations, current initiatives, reading-time estimates,
@@ -159,7 +168,14 @@ Loading, empty, failure, and retry states are explicit rather than falling back 
 selection. The Medium profile link remains available when the feed fails or JavaScript is disabled.
 Run `npm run test:feed` for the feed parsing and request checks.
 
-The homepage has no timed loading overlay; the decorative duck is a static image in the footer.
+The homepage has no timed loading overlay. The original Psyduck animation plays for up to three
+seconds when the footer first comes into view, with a play/pause control for replaying it. It
+stops offscreen or when the tab is hidden. Reduced-motion visitors get the static image unless
+they explicitly choose to play; without JavaScript it remains a static, disabled control.
+
+Keep the [portfolio screenshot](./content/featured/PortfolioWebsite/demo.png) and
+[social preview](./static/og.png) aligned with the current homepage. The social image remains
+1200 × 630 pixels.
 
 Project `github`, `external`, and `cta` fields are optional. Only publish links that resolve to
 the advertised project. The macOS project currently has no verified public demo or source URL,

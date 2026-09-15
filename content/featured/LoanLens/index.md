@@ -10,4 +10,4 @@ tech:
   - Local Storage
 ---
 
-Your loan, in focus. An India-focused home-loan calculator for comparing EMIs, prepayments, interest costs, and payoff goals. Explore repayment schedules and export your scenarios privately in your browser, with optional on-device saving and no sign-in.
+A browser-based planner for new and existing EMI loans in rupees. Compare monthly payments, prepayments, interest costs, and payoff timelines for reducing-balance loans. Explore repayment schedules and export scenarios, with optional on-device saving and no sign-in.

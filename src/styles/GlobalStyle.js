@@ -169,11 +169,6 @@ const GlobalStyle = createGlobalStyle`
   main.fillHeight > section {
     max-width: 100%;
     margin: 0;
-    border-bottom: 1px solid var(--line-frame);
-
-    &:last-child {
-      border-bottom: 0;
-    }
   }
 
   main.fillHeight > section:not(:first-child) {

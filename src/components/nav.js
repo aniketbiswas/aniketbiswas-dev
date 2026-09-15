@@ -141,9 +141,7 @@ const Nav = ({ isHome }) => {
     const sections = ids.map(id => document.getElementById(id)).filter(Boolean);
 
     const updateHeader = () => {
-      const isAtTop = window.pageYOffset < 40;
-
-      if (!isHome || isAtTop) {
+      if (!isHome) {
         setActiveSection('');
         return;
       }
