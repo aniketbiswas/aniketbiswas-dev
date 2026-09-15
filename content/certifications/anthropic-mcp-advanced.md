@@ -6,4 +6,4 @@ icon: 'Anthropic'
 credentialUrl: ''
 ---
 
-Advanced certification covering complex MCP implementation patterns, server development, and production-ready AI agent integrations.
+MCP server design and implementation patterns for AI integrations.

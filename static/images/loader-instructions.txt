@@ -1,9 +1,0 @@
-# Loading GIF Instructions
-
-To complete the loader setup:
-
-1. Place your preferred GIF file in the /static/images/ directory
-2. Name it 'loader-duck.gif'
-3. Restart the Gatsby development server
-
-If you want to use a different filename or path, update the src attribute in src/components/loader.js

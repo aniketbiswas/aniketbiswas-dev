@@ -1,1 +1,0 @@
-You'll need to save the pixel duck image from your attachment to the src/images/ directory with the name 'pixel-duck.png'. This is the image that will be shown during the loading animation.
